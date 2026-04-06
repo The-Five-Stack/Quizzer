@@ -11,6 +11,7 @@ Students interact with the system through a separate dashboard where they can ac
 > Members:
 <ul>
 <li>Oanh Pham</li>
+<li>https://github.com/lunapham10 </li>
 <li>Tri Pham</li>
 <li>Sadikshya Parajuli</li>
 <li>Nghi Vo</li>
