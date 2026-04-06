@@ -16,3 +16,10 @@ Students interact with the system through a separate dashboard where they can ac
 <li>Nghi Vo</li>
 <li>Quy Tran</li>
 </ul>
+
+<h2> Our github links: <h2>
+<li>https://github.com/lunapham10 </li>
+<li>https://github.com/qynwphuu </li>
+<li>https://github.com/tripham-fi </li>
+<li>https://github.com/HaniNghi </li>
+<li>https://github.com/sadikshyeah </li>
