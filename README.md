@@ -7,3 +7,12 @@ Quizzer is an quizz web application help both teachers and students in the learn
 The platform includes two main user roles: teachers and students. Teachers use a dedicated dashboard to create and manage quizzes by defining details such as name, description, course code, and publication status. They can also add multiple choice questions with different difficulty levels, define answer options, and organize quizzes into categories. This enables structured content management and improves the organization of learning materials.
 
 Students interact with the system through a separate dashboard where they can access published quizzes. While completing quizzes, students receive immediate feedback on their answers, supporting effective learning. The application also provides a results view, where students can see their overall performance, including correct answer percentages and detailed question-level statistics.
+
+> Members:
+<ul>
+<li>Oanh Pham</li>
+<li>Tri Pham</li>
+<li>Sadikshya Parajuli</li>
+<li>Nghi Vo</li>
+<li>Quy Tran</li>
+</ul>
