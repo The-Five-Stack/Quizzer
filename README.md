@@ -18,8 +18,10 @@ Students interact with the system through a separate dashboard where they can ac
 </ul>
 
 <h2> Our github links: <h2>
-<link>https://github.com/lunapham10 </link>
+<ul>
+<li>https://github.com/lunapham10 </li>
 <li>https://github.com/qynwphuu </li>
 <li>https://github.com/tripham-fi </li>
 <li>https://github.com/HaniNghi </li>
 <li>https://github.com/sadikshyeah </li>
+</ul>
