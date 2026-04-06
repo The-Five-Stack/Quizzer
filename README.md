@@ -11,7 +11,6 @@ Students interact with the system through a separate dashboard where they can ac
 > Members:
 <ul>
 <li>Oanh Pham</li>
-<li>https://github.com/lunapham10 </li>
 <li>Tri Pham</li>
 <li>Sadikshya Parajuli</li>
 <li>Nghi Vo</li>
@@ -20,9 +19,10 @@ Students interact with the system through a separate dashboard where they can ac
 
 <h2> Our github links: <h2>
 <ul>
-<li>https://github.com/lunapham10 </li>
+<li><a href="https://github.com/lunapham10">Oanh Pham </a></li>
+ 
 <li>https://github.com/qynwphuu </li>
 <li>https://github.com/tripham-fi </li>
 <li>https://github.com/HaniNghi </li>
 <li>https://github.com/sadikshyeah </li>
-</ul>
+
