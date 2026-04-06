@@ -17,12 +17,11 @@ Students interact with the system through a separate dashboard where they can ac
 <li>Quy Tran</li>
 </ul>
 
-<h2> Our github links: <h2>
+<h2> Our github links: </h2>
 <ul>
-<li><a href="https://github.com/lunapham10">Oanh Pham </a></li>
- 
-<li>https://github.com/qynwphuu </li>
-<li>https://github.com/tripham-fi </li>
-<li>https://github.com/HaniNghi </li>
-<li>https://github.com/sadikshyeah </li>
+<li><a href="https://github.com/lunapham10">Oanh Pham </a> </li>
+<li><a href= "https://github.com/qynwphuu"> Ouy Tran </a> </li>
+<li> <a href= "https://github.com/tripham-fi"> Tri Pham </a> </li>
+<li> <a href= "https://github.com/HaniNghi"> Nghi Vo </a> </li>
+<li><a href= "https://github.com/sadikshyeah"> Sadikshya Parajuli</a></li>
 
