@@ -8,7 +8,7 @@ The platform includes two main user roles: teachers and students. Teachers use a
 
 Students interact with the system through a separate dashboard where they can access published quizzes. While completing quizzes, students receive immediate feedback on their answers, supporting effective learning. The application also provides a results view, where students can see their overall performance, including correct answer percentages and detailed question-level statistics.
 
-> Members:
+Members:
 <ul>
 <li>Oanh Pham</li>
 <li>Tri Pham</li>
@@ -25,3 +25,5 @@ Students interact with the system through a separate dashboard where they can ac
 <li> <a href= "https://github.com/HaniNghi"> Nghi Vo </a> </li>
 <li><a href= "https://github.com/sadikshyeah"> Sadikshya Parajuli</a></li>
 
+<h2> Backlog</h2>
+<li><a href="https://github.com/orgs/The-Five-Stack/projects/2">Backlog for Quizzer</a></li>
