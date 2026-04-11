@@ -29,7 +29,16 @@ public class ProjectApplication {
 						passwordEncoder.encode("teacher123")
 				);
 				userRepository.save(teacher);
-
+				
+				// Teacher 2 – for testing authorization
+				User teacher2 = new User(
+						"Teacher",
+						"User",
+						"teacher2",
+						"teacher2@example.com",
+						passwordEncoder.encode("teacher123")
+				);
+				userRepository.save(teacher2);
 				
 			}
 			
