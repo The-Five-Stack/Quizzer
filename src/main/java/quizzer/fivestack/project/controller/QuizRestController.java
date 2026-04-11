@@ -69,6 +69,11 @@ public class QuizRestController {
             );
         }
 
-        return ResponseEntity.ok(quiz);
+        QuizDto dto = new QuizDto();
+                    dto.setName(quiz.getQuizName());
+                    dto.setDescription(quiz.getQuizDescription());
+                    dto.setCourseCode(quiz.getCourseCode());
+                    dto.setPublished(quiz.getIsPublished());
+        return ResponseEntity.ok(dto);
     }
 }
