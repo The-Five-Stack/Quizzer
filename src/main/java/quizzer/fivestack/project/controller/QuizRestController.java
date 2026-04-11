@@ -17,6 +17,8 @@ import quizzer.fivestack.project.domain.Quiz;
 import quizzer.fivestack.project.domain.User;
 import quizzer.fivestack.project.dto.QuizDto;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/quizzes")
 public class QuizRestController {
@@ -30,7 +32,7 @@ public class QuizRestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Quiz> createQuiz(@Valid @RequestBody QuizDto dto){
+    public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizDto dto) {
         Quiz newQuiz = new Quiz();
 
         newQuiz.setQuizName(dto.getName());
@@ -43,11 +45,9 @@ public class QuizRestController {
 
         Quiz saveQuiz = repository.save(newQuiz);
 
-        return new ResponseEntity<>(saveQuiz, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "message", "Quiz created successfully!",
+                "quizId", saveQuiz.getQuizId()));
     }
 
-    
-    
 }
-
-
