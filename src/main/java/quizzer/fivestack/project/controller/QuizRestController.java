@@ -19,6 +19,7 @@ import quizzer.fivestack.project.domain.Quiz;
 import quizzer.fivestack.project.domain.User;
 import quizzer.fivestack.project.dto.QuizDto;
 
+import java.security.Principal;
 import java.util.Map;
 import java.util.Optional;
 
@@ -54,15 +55,20 @@ public class QuizRestController {
     }
     // Get quiz by ID endpoint
     @GetMapping("/{id}")
-    public ResponseEntity<?> getQuizById(@PathVariable Long id) {
-    Optional<Quiz> quiz = repository.findById(id);
+    public ResponseEntity<?> getQuizById(@PathVariable Long id, Principal principal) {
+        Optional<Quiz> quizOpt = repository.findById(id);
 
-    if (quiz.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                Map.of("error", "Quiz not found with id: " + id)
-        );
+        Quiz quiz = quizOpt.orElse(null);
+
+        boolean doesExistAndIsOwner = quiz != null && quiz.getOwner() != null
+                && quiz.getOwner().getUsername().equals(principal.getName());
+
+        if (!doesExistAndIsOwner) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    Map.of("error", "Quiz not found with id: " + id)
+            );
+        }
+
+        return ResponseEntity.ok(quiz);
     }
-
-    return ResponseEntity.ok(quiz.get());
-}
 }
