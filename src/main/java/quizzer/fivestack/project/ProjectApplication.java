@@ -29,7 +29,10 @@ public class ProjectApplication {
 						passwordEncoder.encode("teacher123")
 				);
 				userRepository.save(teacher);
+
+				
 			}
+			
 		};
 	}
 }

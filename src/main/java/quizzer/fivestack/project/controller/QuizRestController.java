@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.validation.Valid;
 
@@ -18,6 +20,7 @@ import quizzer.fivestack.project.domain.User;
 import quizzer.fivestack.project.dto.QuizDto;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/quizzes")
@@ -49,5 +52,17 @@ public class QuizRestController {
                 "message", "Quiz created successfully!",
                 "quizId", saveQuiz.getQuizId()));
     }
+    // Get quiz by ID endpoint
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getQuizById(@PathVariable Long id) {
+    Optional<Quiz> quiz = repository.findById(id);
 
+    if (quiz.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                Map.of("error", "Quiz not found with id: " + id)
+        );
+    }
+
+    return ResponseEntity.ok(quiz.get());
+}
 }
