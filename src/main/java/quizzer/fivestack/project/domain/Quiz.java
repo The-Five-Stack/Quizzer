@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 
 @Entity
@@ -24,6 +26,9 @@ public class Quiz {
     @Column(nullable = false)
     private Boolean isPublished;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     public Quiz(){
 
@@ -78,11 +83,20 @@ public class Quiz {
         this.isPublished = isPublished;
     }
 
+    
 
     @Override
     public String toString() {
         return "Quiz [quizId=" + quizId + ", quizName=" + quizName + ", quizDescription=" + quizDescription
                 + ", courseCode=" + courseCode + ", isPublished=" + isPublished + "]";
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     
