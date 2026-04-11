@@ -8,8 +8,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import quizzer.fivestack.project.enums.Difficulty;
 import jakarta.persistence.Column;
+import java.util.List;
+import jakarta.persistence.CascadeType;
 
 @Entity
 public class Question {
@@ -27,6 +30,9 @@ public class Question {
     @ManyToOne
     @JoinColumn(name="quizId")
     private Quiz quiz;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<Answer> answers;
 
     public Question() {
 
@@ -74,9 +80,16 @@ public class Question {
     @Override
     public String toString() {
         return "Question [questionId=" + questionId + ", questionContent=" + questionContent + ", difficulty="
-                + difficulty +  ", quiz=" + quiz + "]";
+                + difficulty + "]";
     }
 
-    
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
 
 }
