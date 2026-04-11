@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import quizzer.fivestack.project.repository.QuizRepository;
+import quizzer.fivestack.project.repository.UserRepository;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 import quizzer.fivestack.project.domain.Quiz;
+import quizzer.fivestack.project.domain.User;
 import quizzer.fivestack.project.dto.QuizDto;
 
 @RestController
@@ -20,8 +22,11 @@ import quizzer.fivestack.project.dto.QuizDto;
 public class QuizRestController {
     private final QuizRepository repository;
 
-    public QuizRestController(QuizRepository repository) {
+    private final UserRepository userRepository;
+
+    public QuizRestController(QuizRepository repository, UserRepository userRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/create")
@@ -32,6 +37,9 @@ public class QuizRestController {
         newQuiz.setQuizDescription(dto.getDescription());
         newQuiz.setCourseCode(dto.getCourseCode());
         newQuiz.setIsPublished(dto.getPublished());
+
+        User owner = userRepository.findByUsername("teacher").orElse(null);
+        newQuiz.setOwner(owner);
 
         Quiz saveQuiz = repository.save(newQuiz);
 
