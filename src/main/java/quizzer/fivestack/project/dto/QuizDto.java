@@ -1,10 +1,15 @@
 package quizzer.fivestack.project.dto;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.NotNull;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuizDto {
     private Long id;
 
@@ -23,6 +28,8 @@ public class QuizDto {
 
     @NotNull(message = "Published status is required")
     private Boolean published;
+
+    private List<QuestionDto> questions;
 
     public QuizDto(){
 
@@ -74,6 +81,14 @@ public class QuizDto {
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+    public List<QuestionDto> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<QuestionDto> questions) {
+        this.questions = questions;
     }
 
     @Override
