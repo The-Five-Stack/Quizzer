@@ -13,14 +13,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import jakarta.validation.Valid;
 
+import quizzer.fivestack.project.domain.Answer;
+import quizzer.fivestack.project.domain.Question;
 import quizzer.fivestack.project.domain.Quiz;
 import quizzer.fivestack.project.domain.User;
+import quizzer.fivestack.project.dto.AnswerDto;
+import quizzer.fivestack.project.dto.QuestionDto;
 import quizzer.fivestack.project.dto.QuizDto;
 import java.util.stream.Collectors;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.List;
@@ -56,9 +63,10 @@ public class QuizRestController {
                 "quizId", saveQuiz.getQuizId()));
     }
     // Get quiz by ID endpoint
+    @Transactional(readOnly = true)
     @GetMapping("/{id}")
     public ResponseEntity<?> getQuizById(@PathVariable Long id, Principal principal) {
-        Optional<Quiz> quizOpt = repository.findById(id);
+        Optional<Quiz> quizOpt = repository.findWithQuestionsAndAnswersById(id);
 
         Quiz quiz = quizOpt.orElse(null);
 
@@ -72,13 +80,22 @@ public class QuizRestController {
         }
 
         QuizDto dto = new QuizDto();
-                    dto.setName(quiz.getQuizName());
-                    dto.setDescription(quiz.getQuizDescription());
-                    dto.setCourseCode(quiz.getCourseCode());
-                    dto.setPublished(quiz.getIsPublished());
-        return ResponseEntity.ok(dto);
+        dto.setId(quiz.getQuizId());
+        dto.setName(quiz.getQuizName());
+        dto.setDescription(quiz.getQuizDescription());
+        dto.setCourseCode(quiz.getCourseCode());
+        dto.setPublished(quiz.getIsPublished());
 
+        List<QuestionDto> questionDtos = new ArrayList<>();
+        if (quiz.getQuestions() != null) {
+            for (Question q : quiz.getQuestions()) {
+                questionDtos.add(toQuestionDto(q));
+            }
         }
+        dto.setQuestions(questionDtos);
+
+        return ResponseEntity.ok(dto);
+    }
     @GetMapping
     public ResponseEntity<List<QuizDto>> getAllQuizzes() {
         List<QuizDto> quizzes = ((List<Quiz>) repository.findAll())
@@ -95,5 +112,31 @@ public class QuizRestController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(quizzes);
+    }
+
+    // Helper method to convert question entity to DTO
+    private static QuestionDto toQuestionDto(Question q) {
+        QuestionDto dto = new QuestionDto();
+        dto.setId(q.getQuestionId());
+        dto.setQuestionContent(q.getQuestionContent());
+        dto.setDifficulty(q.getDifficulty());
+
+        List<AnswerDto> answerDtos = new ArrayList<>();
+        if (q.getAnswers() != null) {
+            for (Answer a : q.getAnswers()) {
+                answerDtos.add(toAnswerDto(a));
+            }
+        }
+        dto.setAnswers(answerDtos);
+        return dto;
+    }
+
+    // Helper method to convert answer entity to DTO
+    private static AnswerDto toAnswerDto(Answer a) {
+        AnswerDto dto = new AnswerDto();
+        dto.setId(a.getAnswerId());
+        dto.setContent(a.getAnswerContent());
+        dto.setCorrect(a.getIsCorrect());
+        return dto;
     }
 }
