@@ -4,14 +4,28 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import quizzer.fivestack.project.domain.Quiz;
 import quizzer.fivestack.project.domain.User;
+import quizzer.fivestack.project.domain.Answer;
+import quizzer.fivestack.project.enums.Difficulty;
+import quizzer.fivestack.project.domain.Question;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import quizzer.fivestack.project.repository.QuizRepository;
 import quizzer.fivestack.project.repository.UserRepository;
+
+import java.util.ArrayList;
 
 @SpringBootApplication
 public class ProjectApplication {
 
-	public static void main(String[] args) {
+	private final QuizRepository quizRepository;
+
+    ProjectApplication(QuizRepository quizRepository) {
+        this.quizRepository = quizRepository;
+    }
+
+    public static void main(String[] args) {
 		SpringApplication.run(ProjectApplication.class, args);
 	}
 
@@ -40,6 +54,37 @@ public class ProjectApplication {
 				);
 				userRepository.save(teacher2);
 				
+				// seed quiz with questions and answers with teacher as owner
+				Quiz quiz = new Quiz(
+					"Sample Quiz", 
+					"This is a sample quiz description.", 
+					"CS101", 
+					true);
+				quiz.setOwner(teacher);
+
+				Question question1 = new Question("Who is responsible for maximizing product value?", Difficulty.EASY, quiz);
+				Question question2 = new Question("What is the purpose of the Retrospective event?", Difficulty.NORMAL, quiz);
+
+				quiz.setQuestions(new ArrayList<>());
+				quiz.getQuestions().add(question1);
+				quiz.getQuestions().add(question2);
+
+				Answer answer1 = new Answer("Product Owner", true, question1);
+				Answer answer2 = new Answer("Scrum Master", false, question1);
+
+				question1.setAnswers(new ArrayList<>());
+				question1.getAnswers().add(answer1);
+				question1.getAnswers().add(answer2);
+
+				Answer answer3 = new Answer("Finding ways to improve the process", true, question2);
+				Answer answer4 = new Answer("Planning the requirements for the upcoming Sprint", false, question2);
+
+				question2.setAnswers(new ArrayList<>());
+				question2.getAnswers().add(answer3);
+				question2.getAnswers().add(answer4);
+
+				quizRepository.save(quiz);
+	
 			}
 			
 		};
