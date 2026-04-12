@@ -62,20 +62,14 @@ public class QuizRestController {
 
         Optional<Quiz> quizOpt = repository.findById(quizId);
 
-        if (quizOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("error", "Quiz not found with id: " + quizId));
-        }
-
-        Quiz quiz = quizOpt.get();
-
+        Quiz quiz = quizOpt.orElse(null);
         String currentUsername = principal.getName();
 
-        if (quiz.getOwner() == null ||
-                !quiz.getOwner().getUsername().equals(currentUsername)) {
-
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("error", "Access denied: only quiz owner can delete this quiz"));
+        if (quiz == null
+                || quiz.getOwner() == null
+                || !quiz.getOwner().getUsername().equals(currentUsername)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Quiz not found with id: " + quizId));
         }
 
         repository.delete(quiz);
