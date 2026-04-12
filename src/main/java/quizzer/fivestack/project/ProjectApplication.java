@@ -56,9 +56,9 @@ public class ProjectApplication {
 				
 				// seed quiz with questions and answers with teacher as owner
 				Quiz quiz = new Quiz(
-					"Sample Quiz", 
-					"This is a sample quiz description.", 
-					"CS101", 
+					"The Scrum Framework", 
+					"Learn about Scrum roles, events, and artifacts", 
+					"SOF005AS3AE", 
 					true);
 				quiz.setOwner(teacher);
 
