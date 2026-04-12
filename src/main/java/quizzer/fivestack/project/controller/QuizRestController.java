@@ -17,6 +17,7 @@ import quizzer.fivestack.project.domain.Quiz;
 import quizzer.fivestack.project.domain.User;
 import quizzer.fivestack.project.dto.QuizDto;
 
+import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -32,7 +33,13 @@ public class QuizRestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizDto dto) {
+    public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizDto dto, Principal principal) {
+        //Check current username
+        String currentUsername = principal.getName();
+        User currentUser = userRepository.findByUsername(currentUsername)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        //Check user in database
         Quiz newQuiz = new Quiz();
 
         newQuiz.setQuizName(dto.getName());
@@ -40,8 +47,7 @@ public class QuizRestController {
         newQuiz.setCourseCode(dto.getCourseCode());
         newQuiz.setIsPublished(dto.getPublished());
 
-        User owner = userRepository.findByUsername("teacher").orElse(null);
-        newQuiz.setOwner(owner);
+        newQuiz.setOwner(currentUser);
 
         Quiz saveQuiz = repository.save(newQuiz);
 

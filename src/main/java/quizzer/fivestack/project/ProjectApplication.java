@@ -29,6 +29,15 @@ public class ProjectApplication {
 						passwordEncoder.encode("teacher123")
 				);
 				userRepository.save(teacher);
+
+				User teacher2 = new User(
+						"Teacher2",
+						"User2",
+						"teacher2",
+						"teacher2@example.com",
+						passwordEncoder.encode("teacher123")
+				);
+				userRepository.save(teacher2);
 			}
 		};
 	}
