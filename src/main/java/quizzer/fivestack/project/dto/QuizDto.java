@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.NotNull;
 
 public class QuizDto {
+    private Long id;
 
     @NotBlank(message = "Quiz name is required")
     @Size(max = 200)
@@ -27,11 +28,20 @@ public class QuizDto {
 
     }
     
-    public QuizDto(String name, String description, String courseCode, Boolean published) {
+    public QuizDto(Long id, String name, String description, String courseCode, Boolean published) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.courseCode = courseCode;
         this.published = published;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
