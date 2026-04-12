@@ -13,11 +13,11 @@ public class AnswerDto {
     @NotNull
     private Boolean correct;
 
-    public AnswerDto(){
+    public AnswerDto() {
 
     }
 
-    public AnswerDto(String content, Boolean correct){
+    public AnswerDto(String content, Boolean correct) {
         this.content = content;
         this.correct = correct;
     }
@@ -42,7 +42,5 @@ public class AnswerDto {
     public String toString() {
         return "AnswerDto [content=" + content + ", correct=" + correct + "]";
     }
-
-    
 
 }

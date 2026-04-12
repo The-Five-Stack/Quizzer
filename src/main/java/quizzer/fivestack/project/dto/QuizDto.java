@@ -1,9 +1,13 @@
 package quizzer.fivestack.project.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
 
 public class QuizDto {
     private Long id;
@@ -24,16 +28,21 @@ public class QuizDto {
     @NotNull(message = "Published status is required")
     private Boolean published;
 
-    public QuizDto(){
+    public QuizDto() {
 
     }
-    
-    public QuizDto(Long id, String name, String description, String courseCode, Boolean published) {
+
+    @NotEmpty(message = "At least one question is required")
+    private List<@Valid QuestionDto> questions;
+
+    public QuizDto(Long id, String name, String description, String courseCode, Boolean published,
+            List<QuestionDto> questions) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.courseCode = courseCode;
         this.published = published;
+        this.questions = questions;
     }
 
     public Long getId() {
@@ -76,12 +85,18 @@ public class QuizDto {
         this.published = published;
     }
 
+    public List<QuestionDto> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<QuestionDto> questions) {
+        this.questions = questions;
+    }
+
     @Override
     public String toString() {
         return "QuizDto [name=" + name + ", description=" + description + ", courseCode=" + courseCode + ", published="
                 + published + "]";
     }
 
-    
-    
 }

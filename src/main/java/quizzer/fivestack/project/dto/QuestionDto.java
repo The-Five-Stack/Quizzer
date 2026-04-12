@@ -5,7 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import quizzer.fivestack.project.enums.Difficulty;
 
+import java.util.List;
+
 public class QuestionDto {
+    private Long id;
 
     @NotBlank(message = "Question is required")
     @Size(max = 1000)
@@ -14,11 +17,31 @@ public class QuestionDto {
     @NotNull(message = "Difficulty is required")
     private Difficulty difficulty;
 
-    public QuestionDto(){
+    // List of answers for this question
+    private List<AnswerDto> answers;
+
+    public QuestionDto() {
 
     }
 
-    public QuestionDto(String questionContent, Difficulty difficulty){
+    // Getters and Setters for id and answers
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<AnswerDto> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<AnswerDto> answers) {
+        this.answers = answers;
+    }
+
+    public QuestionDto(String questionContent, Difficulty difficulty) {
         this.questionContent = questionContent;
         this.difficulty = difficulty;
     }
@@ -44,5 +67,4 @@ public class QuestionDto {
         return "QuestionDto [questionContent=" + questionContent + ", difficulty=" + difficulty + "]";
     }
 
-    
 }
