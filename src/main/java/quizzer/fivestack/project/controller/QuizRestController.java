@@ -6,13 +6,13 @@ import org.springframework.http.ResponseEntity;
 import quizzer.fivestack.project.repository.QuizRepository;
 import quizzer.fivestack.project.repository.UserRepository;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.validation.Valid;
@@ -45,7 +45,13 @@ public class QuizRestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizDto dto) {
+    public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizDto dto, Principal principal) {
+        //Check current username
+        String currentUsername = principal.getName();
+        User currentUser = userRepository.findByUsername(currentUsername)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        //Check user in database
         Quiz newQuiz = new Quiz();
 
         newQuiz.setQuizName(dto.getName());
@@ -53,8 +59,7 @@ public class QuizRestController {
         newQuiz.setCourseCode(dto.getCourseCode());
         newQuiz.setIsPublished(dto.getPublished());
 
-        User owner = userRepository.findByUsername("teacher").orElse(null);
-        newQuiz.setOwner(owner);
+        newQuiz.setOwner(currentUser);
 
         Quiz saveQuiz = repository.save(newQuiz);
 
@@ -62,6 +67,7 @@ public class QuizRestController {
                 "message", "Quiz created successfully!",
                 "quizId", saveQuiz.getQuizId()));
     }
+
     // Get quiz by ID endpoint
     @Transactional(readOnly = true)
     @GetMapping("/{id}")
@@ -96,6 +102,7 @@ public class QuizRestController {
 
         return ResponseEntity.ok(dto);
     }
+
     @GetMapping
     public ResponseEntity<List<QuizDto>> getAllQuizzes() {
         List<QuizDto> quizzes = ((List<Quiz>) repository.findAll())
@@ -112,6 +119,29 @@ public class QuizRestController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(quizzes);
+    }
+
+     // Endpoint to delete a quiz by quizId
+    @DeleteMapping("/{quizId}")
+    public ResponseEntity<?> deleteQuiz(@PathVariable Long quizId, Principal principal) {
+
+        Optional<Quiz> quizOpt = repository.findById(quizId);
+
+        Quiz quiz = quizOpt.orElse(null);
+        String currentUsername = principal.getName();
+
+        if (quiz == null
+                || quiz.getOwner() == null
+                || !quiz.getOwner().getUsername().equals(currentUsername)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Quiz not found with id: " + quizId));
+        }
+
+        repository.delete(quiz);
+
+        return ResponseEntity.ok(
+                Map.of("message", "Quiz deleted successfully",
+                        "quizId", quizId));
     }
 
     // Helper method to convert question entity to DTO
