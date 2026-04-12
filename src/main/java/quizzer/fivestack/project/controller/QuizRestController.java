@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import quizzer.fivestack.project.repository.QuizRepository;
 import quizzer.fivestack.project.repository.UserRepository;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 
 import java.security.Principal;
 import java.util.Map;
+import java.util.Optional;
 import java.util.List;
 
 @RestController
@@ -57,6 +60,28 @@ public class QuizRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "message", "Quiz created successfully!",
                 "quizId", saveQuiz.getQuizId()));
+    }
+    // Endpoint to delete a quiz by quizId
+    @DeleteMapping("/{quizId}")
+    public ResponseEntity<?> deleteQuiz(@PathVariable Long quizId, Principal principal) {
+
+        Optional<Quiz> quizOpt = repository.findById(quizId);
+
+        Quiz quiz = quizOpt.orElse(null);
+        String currentUsername = principal.getName();
+
+        if (quiz == null
+                || quiz.getOwner() == null
+                || !quiz.getOwner().getUsername().equals(currentUsername)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Quiz not found with id: " + quizId));
+        }
+
+        repository.delete(quiz);
+
+        return ResponseEntity.ok(
+                Map.of("message", "Quiz deleted successfully",
+                        "quizId", quizId));
     }
 
     @GetMapping
