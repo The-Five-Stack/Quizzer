@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.List;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/quizzes")
@@ -46,21 +47,54 @@ public class QuizRestController {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     @PostMapping("/create")
     public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizDto dto, Principal principal) {
-        //Check current username
+        // Check current username
         String currentUsername = principal.getName();
         User currentUser = userRepository.findByUsername(currentUsername)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        //Check user in database
-        Quiz newQuiz = new Quiz();
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // Create new Quiz
+        Quiz newQuiz = new Quiz();
         newQuiz.setQuizName(dto.getName());
         newQuiz.setQuizDescription(dto.getDescription());
         newQuiz.setCourseCode(dto.getCourseCode());
         newQuiz.setIsPublished(dto.getPublished());
 
+        // Create list of questions
+        List<Question> questions = new ArrayList<>();
+
+        // Process questions from DTO
+        if (dto.getQuestions() != null) {
+            for (QuestionDto qDto : dto.getQuestions()) {
+                Question q = new Question();
+                q.setQuestionContent(qDto.getQuestionContent());
+                q.setDifficulty(qDto.getDifficulty());
+                q.setQuiz(newQuiz); // Set parent-child relationship
+
+                // Process Answers inside each Question
+                List<Answer> answers = new ArrayList<>();
+                if (qDto.getAnswers() != null) {
+                    for (AnswerDto aDto : qDto.getAnswers()) {
+                        Answer a = new Answer();
+                        a.setAnswerContent(aDto.getContent());
+                        a.setIsCorrect(aDto.getCorrect());
+                        a.setQuestion(q); // Set parent-child relationship
+                        answers.add(a);
+                    }
+                }
+                q.setAnswers(answers);
+                questions.add(q);
+            }
+        }
+
+        if (questions.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "message", "At least one question is required"));
+        }
+
+        newQuiz.setQuestions(questions);
         newQuiz.setOwner(currentUser);
 
         Quiz saveQuiz = repository.save(newQuiz);
@@ -83,8 +117,7 @@ public class QuizRestController {
 
         if (!doesExistAndIsOwner) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    Map.of("error", "Quiz not found with id: " + id)
-            );
+                    Map.of("error", "Quiz not found with id: " + id));
         }
 
         QuizDto dto = new QuizDto();
@@ -123,7 +156,7 @@ public class QuizRestController {
         return ResponseEntity.ok(quizzes);
     }
 
-     // Endpoint to delete a quiz by quizId
+    // Endpoint to delete a quiz by quizId
     @DeleteMapping("/{quizId}")
     public ResponseEntity<?> deleteQuiz(@PathVariable Long quizId, Principal principal) {
 
@@ -173,7 +206,7 @@ public class QuizRestController {
     }
 
     // filter quizz by published
-    @GetMapping("/publishedquizz") 
+    @GetMapping("/publishedquizz")
     public ResponseEntity<List<QuizDto>> getAllPublishedQuizzes() {
         List<QuizDto> quizzes = repository.findByIsPublishedTrue()
                 .stream()
