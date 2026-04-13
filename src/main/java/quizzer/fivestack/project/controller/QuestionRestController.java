@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/quizzes")
+@CrossOrigin(origins = "http://localhost:5173")
 public class QuestionRestController {
     private final QuestionRepository questionRepository;
     private final QuizRepository repository;
@@ -30,7 +32,7 @@ public class QuestionRestController {
         this.repository = repository;
     }
 
-    @PostMapping("{quizId}/questions")
+    @PostMapping("/{quizId}/questions")
     public ResponseEntity<?> addQuestionToQuiz(@PathVariable Long quizId, @Valid @RequestBody QuestionDto dto, Principal principal) {
         
         // check Quiz by quizId

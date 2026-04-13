@@ -14,6 +14,7 @@ import quizzer.fivestack.project.domain.Quiz;
 @Repository
 public interface QuizRepository extends CrudRepository<Quiz, Long> {
     List<Quiz> findByQuizName(String quizName);
+    List<Quiz> findByIsPublishedTrue();
 
     // Fetches questions together with the quiz
     @EntityGraph(attributePaths = { "questions" })
