@@ -8,6 +8,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
+
 @Setter
 @Getter
 @Entity
@@ -42,6 +45,10 @@ public class User {
 
     @Column(updatable = false)
     public LocalDateTime createdAt = LocalDateTime.now();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "owner")
+    private List<Quiz> quizzes;
 
     @Column
     private LocalDateTime updatedAt;

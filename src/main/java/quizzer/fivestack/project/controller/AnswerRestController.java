@@ -10,6 +10,7 @@ import quizzer.fivestack.project.domain.Answer;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/questions")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AnswerRestController {
     private final AnswerRepository answerRepository;
 
@@ -29,7 +31,7 @@ public class AnswerRestController {
         this.questionRepository = questionRepository;
     }
 
-    @PostMapping("{questionId}/answers")
+    @PostMapping("/{questionId}/answers")
     public ResponseEntity<?> addAnswertoQuestion(@PathVariable Long questionId, @Valid @RequestBody AnswerDto dto,
             Principal principal) {
 

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import quizzer.fivestack.project.repository.QuizRepository;
 import quizzer.fivestack.project.repository.UserRepository;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/quizzes")
+@CrossOrigin(origins = "http://localhost:5173")
 public class QuizRestController {
     private final QuizRepository repository;
 
@@ -168,5 +170,24 @@ public class QuizRestController {
         dto.setContent(a.getAnswerContent());
         dto.setCorrect(a.getIsCorrect());
         return dto;
+    }
+
+    // filter quizz by published
+    @GetMapping("/publishedquizz") 
+    public ResponseEntity<List<QuizDto>> getAllPublishedQuizzes() {
+        List<QuizDto> quizzes = repository.findByIsPublishedTrue()
+                .stream()
+                .map(q -> {
+                    QuizDto dto = new QuizDto();
+                    dto.setId(q.getQuizId());
+                    dto.setName(q.getQuizName());
+                    dto.setDescription(q.getQuizDescription());
+                    dto.setCourseCode(q.getCourseCode());
+                    dto.setPublished(q.getIsPublished());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(quizzes);
     }
 }

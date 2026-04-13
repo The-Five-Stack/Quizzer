@@ -6,6 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 
 @Entity
@@ -20,6 +23,7 @@ public class Answer {
     @Column(nullable = false)
     private Boolean isCorrect;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="questionId")
     private Question question;
@@ -58,6 +62,7 @@ public class Answer {
         this.isCorrect = isCorrect;
     }
 
+    @JsonIgnore
     public Question getQuestion() {
         return question;
     }

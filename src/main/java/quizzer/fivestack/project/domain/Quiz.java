@@ -9,6 +9,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 
 
@@ -34,6 +37,7 @@ public class Quiz {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<Question> questions;
 
@@ -106,6 +110,7 @@ public class Quiz {
         this.owner = owner;
     }
 
+    @JsonIgnore
     public List<Question> getQuestions() {
         return questions;
     }
