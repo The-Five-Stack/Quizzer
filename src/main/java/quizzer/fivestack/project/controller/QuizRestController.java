@@ -35,7 +35,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/quizzes")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "https://quizzer-ui.onrender.com"})
 public class QuizRestController {
     private final QuizRepository repository;
 

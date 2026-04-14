@@ -20,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/questions")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "https://quizzer-ui.onrender.com"})
 public class AnswerRestController {
     private final AnswerRepository answerRepository;
 
