@@ -28,8 +28,8 @@ Members:
 <h2> Backlog</h2>
 <li><a href="https://github.com/orgs/The-Five-Stack/projects/2">Backlog for Quizzer</a></li>
 
-# Developer Guide
-## Backend
+## Developer Guide
+### Backend
 #### System requirements
 
 To run this application, you must have the following installed on your system:
