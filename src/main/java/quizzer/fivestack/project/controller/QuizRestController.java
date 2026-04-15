@@ -217,14 +217,8 @@ public class QuizRestController {
 
         Quiz saved = repository.save(quiz);
 
-        QuizDto responseDto = new QuizDto();
-        responseDto.setId(saved.getQuizId());
-        responseDto.setName(saved.getQuizName());
-        responseDto.setDescription(saved.getQuizDescription());
-        responseDto.setCourseCode(saved.getCourseCode());
-        responseDto.setPublished(saved.getIsPublished());
-
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(
+                Map.of("message", "Quiz updated successfully", "quizId", saved.getQuizId()));
     }
 
 }
