@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +36,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/quizzes")
-@CrossOrigin(origins = {"http://localhost:5173", "https://quizzer-ui.onrender.com"})
+@CrossOrigin(origins = { "http://localhost:5173", "https://quizzer-ui.onrender.com" })
 public class QuizRestController {
     private final QuizRepository repository;
 
@@ -48,12 +49,12 @@ public class QuizRestController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizDto dto, Principal principal) {
-        //Check current username
+        // Check current username
         String currentUsername = principal.getName();
         User currentUser = userRepository.findByUsername(currentUsername)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        //Check user in database
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Check user in database
         Quiz newQuiz = new Quiz();
 
         newQuiz.setQuizName(dto.getName());
@@ -83,8 +84,7 @@ public class QuizRestController {
 
         if (!doesExistAndIsOwner) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    Map.of("error", "Quiz not found with id: " + id)
-            );
+                    Map.of("error", "Quiz not found with id: " + id));
         }
 
         QuizDto dto = new QuizDto();
@@ -123,7 +123,7 @@ public class QuizRestController {
         return ResponseEntity.ok(quizzes);
     }
 
-     // Endpoint to delete a quiz by quizId
+    // Endpoint to delete a quiz by quizId
     @DeleteMapping("/{quizId}")
     public ResponseEntity<?> deleteQuiz(@PathVariable Long quizId, Principal principal) {
 
@@ -173,7 +173,7 @@ public class QuizRestController {
     }
 
     // filter quizz by published
-    @GetMapping("/publishedquizz") 
+    @GetMapping("/publishedquizz")
     public ResponseEntity<List<QuizDto>> getAllPublishedQuizzes() {
         List<QuizDto> quizzes = repository.findByIsPublishedTrue()
                 .stream()
@@ -190,4 +190,35 @@ public class QuizRestController {
 
         return ResponseEntity.ok(quizzes);
     }
+
+    // Edit, update quiz endpoint
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editQuiz(
+            @PathVariable Long id,
+            @Valid @RequestBody QuizDto dto,
+            Principal principal) {
+        Optional<Quiz> quizOpt = repository.findById(id);
+
+        Quiz quiz = quizOpt.orElse(null);
+        if (quiz == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Quiz not found with id: " + id));
+        }
+
+        if (quiz.getOwner() == null || !quiz.getOwner().getUsername().equals(principal.getName())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Not your quiz"));
+        }
+
+        quiz.setQuizName(dto.getName());
+        quiz.setQuizDescription(dto.getDescription());
+        quiz.setCourseCode(dto.getCourseCode());
+        quiz.setIsPublished(dto.getPublished());
+
+        Quiz saved = repository.save(quiz);
+
+        return ResponseEntity.ok(
+                Map.of("message", "Quiz updated successfully", "quizId", saved.getQuizId()));
+    }
+
 }
