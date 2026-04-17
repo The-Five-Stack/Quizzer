@@ -1,17 +1,13 @@
-
-#
-# Build stage
-#
-FROM maven:3.9.6-eclipse-temurin-17 AS build
-WORKDIR /build
-COPY . .
-RUN mvn clean package -DskipTests
-
-#
-# Package stage
-#
-FROM eclipse-temurin:17-jdk
-WORKDIR /app
-COPY --from=build /build/target/project-0.0.1-SNAPSHOT.jar app.jar
+FROM eclipse-temurin:17-jdk AS builder
+WORKDIR /opt/app
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN chmod +x ./mvnw
+RUN ./mvnw dependency:go-offline
+COPY ./src ./src
+RUN ./mvnw clean install -DskipTests 
+RUN find ./target -type f -name '*.jar' -exec cp {} /opt/app/app.jar \; -quit
+FROM eclipse-temurin:17-jre-alpine
+COPY --from=builder /opt/app/*.jar /opt/app/
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java", "-jar", "/opt/app/app.jar"]

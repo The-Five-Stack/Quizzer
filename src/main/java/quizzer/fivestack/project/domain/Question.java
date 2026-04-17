@@ -12,6 +12,9 @@ import jakarta.persistence.OneToMany;
 import quizzer.fivestack.project.enums.Difficulty;
 import jakarta.persistence.Column;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 
 @Entity
@@ -27,10 +30,12 @@ public class Question {
     @Column(nullable = false)
     private Difficulty difficulty;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="quizId")
     private Quiz quiz;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Answer> answers;
 
@@ -83,6 +88,7 @@ public class Question {
                 + difficulty + "]";
     }
 
+    @JsonIgnore
     public List<Answer> getAnswers() {
         return answers;
     }

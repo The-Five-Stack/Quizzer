@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 
 public class AnswerDto {
 
+    private Long id;
+
     @NotBlank
     @Size(max = 500)
     private String content;
@@ -20,6 +22,14 @@ public class AnswerDto {
     public AnswerDto(String content, Boolean correct){
         this.content = content;
         this.correct = correct;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getContent() {

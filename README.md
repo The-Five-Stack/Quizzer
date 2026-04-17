@@ -27,3 +27,41 @@ Members:
 
 <h2> Backlog</h2>
 <li><a href="https://github.com/orgs/The-Five-Stack/projects/2">Backlog for Quizzer</a></li>
+
+## Developer Guide
+### Backend
+#### System requirements
+
+To run this application, you must have the following installed on your system:
+- Java 17: The application is built using Java 17 (as specified in the pom.xml under the java.version property).
+- Git: To clone the repository.
+
+#### How to start the backend application
+Follow these steps to get the application up and running:
+1. Clone the repository
+Open your terminal (e.g., Git Bash, Command Prompt, or PowerShell) and run:
+
+```
+git clone https://github.com/The-Five-Stack/Quizzer.git
+cd Quizzer
+```
+
+2. Configure the Environment (Important)
+By default, the application is configured to run with an H2 in-memory database for local development. If you are running the application for the first time, ensure no other service is using port 8080.
+
+3. Run the application
+Use the Maven Wrapper (./mvnw) to start the Spring Boot application. This ensures you don't need to have Maven installed globally.
+
+```
+./mvnw spring-boot:run
+```
+
+4. Access the application
+Once the terminal shows "Started ProjectApplication", open your web browser and visit: http://localhost:8080
+
+#### URL of the backend application
+https://quizzer-git-quizzer-project.2.rahtiapp.fi
+
+## Frontend
+#### URL of the frontend application
+https://quizzer-project-teamb-1-alm3.onrender.com
