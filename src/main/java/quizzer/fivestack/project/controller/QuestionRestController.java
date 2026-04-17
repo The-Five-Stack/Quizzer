@@ -2,6 +2,7 @@ package quizzer.fivestack.project.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -18,6 +19,7 @@ import quizzer.fivestack.project.repository.QuizRepository;
 
 import java.security.Principal;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/quizzes")
@@ -61,4 +63,41 @@ public class QuestionRestController {
                 "message", "Question created successfully and linked to quiz " + quizId,
                 "questionId", saveQuestion.getQuestionId()));
     }
+
+    @DeleteMapping("{quizId}/questions/{questionId}")
+    public ResponseEntity<?> deleteQuestionFromQuiz(@PathVariable Long quizId, @PathVariable Long questionId,
+            Principal principal) {
+
+        Optional<quizzer.fivestack.project.domain.Quiz> quizOpt = repository.findById(quizId);
+        // Return 404 when the parent quiz does not exist.
+        if (quizOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Quiz not found with id: " + quizId));
+        }
+
+        quizzer.fivestack.project.domain.Quiz quiz = quizOpt.get();
+        String currentUsername = principal.getName();
+
+        // Return 403 when quiz exists but belongs to another user.
+        if (quiz.getOwner() == null || !quiz.getOwner().getUsername().equals(currentUsername)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "You are not the owner of this quiz!"));
+        }
+
+        Optional<Question> questionOpt = questionRepository.findById(questionId);
+        // Return 404 when question does not exist or is not part of this quiz.
+        if (questionOpt.isEmpty() || questionOpt.get().getQuiz() == null
+                || !questionOpt.get().getQuiz().getQuizId().equals(quizId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Question not found with id: " + questionId + " in quiz: " + quizId));
+        }
+
+        questionRepository.delete(questionOpt.get());
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Question and related answers deleted successfully",
+                "questionId", questionId,
+                "quizId", quizId));
+    }
+    
 }
