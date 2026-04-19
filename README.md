@@ -62,6 +62,6 @@ Once the terminal shows "Started ProjectApplication", open your web browser and 
 #### URL of the backend application
 https://quizzer-git-quizzer-project.2.rahtiapp.fi
 
-## Frontend
+### Frontend
 #### URL of the frontend application
-https://quizzer-project-teamb-1-alm3.onrender.com
+https://quizzer-ui.onrender.com
