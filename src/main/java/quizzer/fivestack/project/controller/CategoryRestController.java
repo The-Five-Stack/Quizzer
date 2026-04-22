@@ -6,12 +6,13 @@ import quizzer.fivestack.project.repository.CategoryRepository;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.DeleteMapping;
+
 import jakarta.validation.Valid;
 
 import quizzer.fivestack.project.domain.Category;
@@ -82,6 +83,7 @@ public class CategoryRestController {
         return ResponseEntity.ok(categories);
     }
 
+    // Delete category by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         Optional<Category> categoryOpt = categoryRepository.findById(id);
