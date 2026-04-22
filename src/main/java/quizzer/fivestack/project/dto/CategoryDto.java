@@ -2,7 +2,6 @@ package quizzer.fivestack.project.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import jakarta.validation.constraints.NotNull;
 
 public class CategoryDto {
 
