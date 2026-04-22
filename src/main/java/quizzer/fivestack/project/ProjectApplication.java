@@ -5,12 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import quizzer.fivestack.project.domain.Quiz;
-import quizzer.fivestack.project.domain.User;
-import quizzer.fivestack.project.domain.Answer;
+import quizzer.fivestack.project.domain.*;
 import quizzer.fivestack.project.enums.Difficulty;
-import quizzer.fivestack.project.domain.Question;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import quizzer.fivestack.project.repository.CategoryRepository;
 import quizzer.fivestack.project.repository.QuizRepository;
 import quizzer.fivestack.project.repository.UserRepository;
 
@@ -20,9 +18,11 @@ import java.util.ArrayList;
 public class ProjectApplication {
 
 	private final QuizRepository quizRepository;
+	private final CategoryRepository categoryRepository;
 
-    ProjectApplication(QuizRepository quizRepository) {
+    ProjectApplication(QuizRepository quizRepository, CategoryRepository categoryRepository) {
         this.quizRepository = quizRepository;
+		this.categoryRepository = categoryRepository;
     }
 
     public static void main(String[] args) {
@@ -53,14 +53,29 @@ public class ProjectApplication {
 						passwordEncoder.encode("teacher123")
 				);
 				userRepository.save(teacher2);
-				
-				// seed quiz with questions and answers with teacher as owner
+
+				// seed category
+				Category cate1 = new Category(
+						"Agile",
+						"Quizzes related to the Agile principles and project management frameworks"
+				);
+
+				Category cate2 = new Category(
+						"Databases",
+						"Quizzes related to different Databases management systems and query languages"
+				);
+
+				categoryRepository.save(cate1);
+				categoryRepository.save(cate2);
+
+				// seed quiz with category, questions and answers with teacher as owner
 				Quiz quiz = new Quiz(
 					"The Scrum Framework", 
 					"Learn about Scrum roles, events, and artifacts", 
 					"SOF005AS3AE", 
 					true);
 				quiz.setOwner(teacher);
+				quiz.setCategory(cate1); // Agile
 
 				Question question1 = new Question("Who is responsible for maximizing product value?", Difficulty.EASY, quiz);
 				Question question2 = new Question("What is the purpose of the Retrospective event?", Difficulty.NORMAL, quiz);
