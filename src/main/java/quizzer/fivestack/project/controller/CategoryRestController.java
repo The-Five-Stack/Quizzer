@@ -32,7 +32,7 @@ public class CategoryRestController {
     }
 
     // Create a new category
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryDto dto) {
 
         Category newCategory = new Category();
