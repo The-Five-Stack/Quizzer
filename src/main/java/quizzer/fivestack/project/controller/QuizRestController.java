@@ -93,6 +93,7 @@ public class QuizRestController {
         dto.setDescription(quiz.getQuizDescription());
         dto.setCourseCode(quiz.getCourseCode());
         dto.setPublished(quiz.getIsPublished());
+        dto.setCreatedAt(quiz.getCreatedAt());
 
         List<QuestionDto> questionDtos = new ArrayList<>();
         if (quiz.getQuestions() != null) {
@@ -116,6 +117,7 @@ public class QuizRestController {
                     dto.setDescription(q.getQuizDescription());
                     dto.setCourseCode(q.getCourseCode());
                     dto.setPublished(q.getIsPublished());
+                    dto.setCreatedAt(q.getCreatedAt());
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -184,6 +186,7 @@ public class QuizRestController {
                     dto.setDescription(q.getQuizDescription());
                     dto.setCourseCode(q.getCourseCode());
                     dto.setPublished(q.getIsPublished());
+                    dto.setCreatedAt(q.getCreatedAt());
                     return dto;
                 })
                 .collect(Collectors.toList());

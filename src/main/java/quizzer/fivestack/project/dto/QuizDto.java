@@ -1,7 +1,9 @@
 package quizzer.fivestack.project.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.validation.constraints.NotBlank;
@@ -28,6 +30,9 @@ public class QuizDto {
 
     @NotNull(message = "Published status is required")
     private Boolean published;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Europe/Helsinki")
+    private LocalDateTime createdAt;
 
     private List<QuestionDto> questions;
 
@@ -91,10 +96,18 @@ public class QuizDto {
         this.questions = questions;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "QuizDto [name=" + name + ", description=" + description + ", courseCode=" + courseCode + ", published="
-                + published + "]";
+                + published + ", createdAt=" + createdAt +"]";
     }
 
     
