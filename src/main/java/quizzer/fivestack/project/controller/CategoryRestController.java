@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import quizzer.fivestack.project.repository.CategoryRepository;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,9 +16,13 @@ import jakarta.validation.Valid;
 import quizzer.fivestack.project.domain.Category;
 import quizzer.fivestack.project.dto.CategoryDto;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/categories")
+@CrossOrigin(origins = { "http://localhost:5173", "https://quizzer-ui.onrender.com" })
 public class CategoryRestController {
 
     private final CategoryRepository categoryRepository;
@@ -44,8 +49,35 @@ public class CategoryRestController {
     // Get category by ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getCategoryById(@PathVariable Long id) {
-        return categoryRepository.findById(id)
-                .map(category -> ResponseEntity.ok(category))
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Category> categoryOpt = categoryRepository.findById(id);
+
+        if (categoryOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Category not found with id: " + id));
+        }
+
+        Category category = categoryOpt.get();
+        CategoryDto dto = new CategoryDto();
+        dto.setId(category.getId());
+        dto.setName(category.getName());
+        dto.setDescription(category.getDescription());
+
+        return ResponseEntity.ok(dto);
+    }
+
+    // Get all categories
+    @GetMapping
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> categories = ((List<Category>) categoryRepository.findAll())
+                .stream()
+                .map(c -> {
+                    CategoryDto dto = new CategoryDto();
+                    dto.setId(c.getId());
+                    dto.setName(c.getName());
+                    dto.setDescription(c.getDescription());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(categories);
     }
 }

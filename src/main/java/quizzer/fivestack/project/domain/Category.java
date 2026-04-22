@@ -1,10 +1,12 @@
 package quizzer.fivestack.project.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Category {
@@ -14,8 +16,11 @@ public class Category {
     private Long id;
 
     @NotBlank
+    @Size(max = 100)
+    @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(length = 255)
     private String description;
 
     public Category() {
@@ -44,5 +49,10 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Category [id=" + id + ", name=" + name + "]";
     }
 }
