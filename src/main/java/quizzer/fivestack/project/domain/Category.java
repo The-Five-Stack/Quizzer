@@ -16,7 +16,6 @@ public class Category {
     @NotBlank
     private String name;
 
-    @NotBlank
     private String description;
 
     public Category() {
