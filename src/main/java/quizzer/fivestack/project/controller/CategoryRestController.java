@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import jakarta.validation.Valid;
 
 import quizzer.fivestack.project.domain.Category;
@@ -79,5 +80,19 @@ public class CategoryRestController {
                 })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(categories);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
+        Optional<Category> categoryOpt = categoryRepository.findById(id);
+
+        if (categoryOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Category not found with id: " + id));
+        }
+
+        categoryRepository.delete(categoryOpt.get());
+
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 }
