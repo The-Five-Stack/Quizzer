@@ -87,13 +87,7 @@ public class QuizRestController {
                     Map.of("error", "Quiz not found with id: " + id));
         }
 
-        QuizDto dto = new QuizDto();
-        dto.setId(quiz.getQuizId());
-        dto.setName(quiz.getQuizName());
-        dto.setDescription(quiz.getQuizDescription());
-        dto.setCourseCode(quiz.getCourseCode());
-        dto.setPublished(quiz.getIsPublished());
-        dto.setCreatedAt(quiz.getCreatedAt());
+        QuizDto dto = QuizDto.from(quiz);
 
         List<QuestionDto> questionDtos = new ArrayList<>();
         if (quiz.getQuestions() != null) {
@@ -110,16 +104,7 @@ public class QuizRestController {
     public ResponseEntity<List<QuizDto>> getAllQuizzes() {
         List<QuizDto> quizzes = ((List<Quiz>) repository.findAll())
                 .stream()
-                .map(q -> {
-                    QuizDto dto = new QuizDto();
-                    dto.setId(q.getQuizId());
-                    dto.setName(q.getQuizName());
-                    dto.setDescription(q.getQuizDescription());
-                    dto.setCourseCode(q.getCourseCode());
-                    dto.setPublished(q.getIsPublished());
-                    dto.setCreatedAt(q.getCreatedAt());
-                    return dto;
-                })
+                .map(QuizDto::from)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(quizzes);
@@ -179,16 +164,7 @@ public class QuizRestController {
     public ResponseEntity<List<QuizDto>> getAllPublishedQuizzes() {
         List<QuizDto> quizzes = repository.findByIsPublishedTrue()
                 .stream()
-                .map(q -> {
-                    QuizDto dto = new QuizDto();
-                    dto.setId(q.getQuizId());
-                    dto.setName(q.getQuizName());
-                    dto.setDescription(q.getQuizDescription());
-                    dto.setCourseCode(q.getCourseCode());
-                    dto.setPublished(q.getIsPublished());
-                    dto.setCreatedAt(q.getCreatedAt());
-                    return dto;
-                })
+                .map(QuizDto::from)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(quizzes);
