@@ -1,18 +1,12 @@
 package quizzer.fivestack.project.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.CascadeType;
+import org.hibernate.annotations.CreationTimestamp;
 
 
 @Entity
@@ -33,6 +27,10 @@ public class Quiz {
     @Column(nullable = false)
     private Boolean isPublished;
 
+    @Column(nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
@@ -40,6 +38,10 @@ public class Quiz {
     @JsonIgnore
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<Question> questions;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     public Quiz(){
 
@@ -94,12 +96,18 @@ public class Quiz {
         this.isPublished = isPublished;
     }
 
-    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
     @Override
     public String toString() {
         return "Quiz [quizId=" + quizId + ", quizName=" + quizName + ", quizDescription=" + quizDescription
-                + ", courseCode=" + courseCode + ", isPublished=" + isPublished + "]";
+                + ", courseCode=" + courseCode + ", isPublished=" + isPublished + ", createdAt=" + createdAt + "]";
     }
 
     public User getOwner() {
@@ -119,5 +127,13 @@ public class Quiz {
         this.questions = questions;
     }
 
-    
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+
 }
