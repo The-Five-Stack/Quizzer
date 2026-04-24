@@ -22,8 +22,4 @@ public interface QuizRepository extends CrudRepository<Quiz, Long> {
     @Query("SELECT q FROM Quiz q WHERE q.quizId = :id")
     Optional<Quiz> findWithQuestionsAndAnswersById(@Param("id") Long id);
 
-    @EntityGraph(attributePaths = { "category" })
-    @Query("SELECT q FROM Quiz q")
-    List<Quiz> findAllWithCategory();
-
 }

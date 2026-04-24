@@ -38,6 +38,7 @@ public class QuizDto {
 
     private List<QuestionDto> questions;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private CategoryDto category;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
