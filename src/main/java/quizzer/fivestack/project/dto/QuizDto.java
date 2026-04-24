@@ -39,10 +39,12 @@ public class QuizDto {
 
     private CategoryDto category;
 
-    public QuizDto(){
+    private Long categoryId;
+
+    public QuizDto() {
 
     }
-    
+
     public QuizDto(Long id, String name, String description, String courseCode, Boolean published) {
         this.id = id;
         this.name = name;
@@ -115,10 +117,18 @@ public class QuizDto {
         this.category = category;
     }
 
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
     @Override
     public String toString() {
         return "QuizDto [name=" + name + ", description=" + description + ", courseCode=" + courseCode + ", published="
-                + published + ", createdAt=" + createdAt +"]";
+                + published + ", createdAt=" + createdAt + "]";
     }
 
     public static QuizDto from(Quiz quiz) {
@@ -144,6 +154,4 @@ public class QuizDto {
         return dto;
     }
 
-    
-    
 }
