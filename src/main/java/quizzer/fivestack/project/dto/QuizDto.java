@@ -41,6 +41,7 @@ public class QuizDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private CategoryDto category;
 
+    @NotNull(message = "Category is required")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long categoryId;
 

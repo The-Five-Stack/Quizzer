@@ -72,14 +72,12 @@ public class QuizRestController {
 
         newQuiz.setOwner(currentUser);
 
-        if (dto.getCategoryId() != null) {
-            Optional<Category> categoryOpt = categoryRepository.findById(dto.getCategoryId());
-            if (categoryOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(Map.of("error", "Category not found with id: " + dto.getCategoryId()));
-            }
-            newQuiz.setCategory(categoryOpt.get());
+        Optional<Category> categoryOpt = categoryRepository.findById(dto.getCategoryId());
+        if (categoryOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Category not found with id: " + dto.getCategoryId()));
         }
+        newQuiz.setCategory(categoryOpt.get());
 
         Quiz saveQuiz = repository.save(newQuiz);
 
