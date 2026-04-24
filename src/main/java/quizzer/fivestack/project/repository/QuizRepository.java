@@ -14,10 +14,12 @@ import quizzer.fivestack.project.domain.Quiz;
 @Repository
 public interface QuizRepository extends CrudRepository<Quiz, Long> {
     List<Quiz> findByQuizName(String quizName);
+
     List<Quiz> findByIsPublishedTrue();
 
     // Fetches questions together with the quiz
-    @EntityGraph(attributePaths = { "questions" })
+    @EntityGraph(attributePaths = { "questions", "category" })
     @Query("SELECT q FROM Quiz q WHERE q.quizId = :id")
     Optional<Quiz> findWithQuestionsAndAnswersById(@Param("id") Long id);
+
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -37,12 +38,17 @@ public class QuizDto {
 
     private List<QuestionDto> questions;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private CategoryDto category;
 
-    public QuizDto(){
+    @NotNull(message = "Category is required")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Long categoryId;
+
+    public QuizDto() {
 
     }
-    
+
     public QuizDto(Long id, String name, String description, String courseCode, Boolean published) {
         this.id = id;
         this.name = name;
@@ -115,10 +121,18 @@ public class QuizDto {
         this.category = category;
     }
 
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
     @Override
     public String toString() {
         return "QuizDto [name=" + name + ", description=" + description + ", courseCode=" + courseCode + ", published="
-                + published + ", createdAt=" + createdAt +"]";
+                + published + ", createdAt=" + createdAt + "]";
     }
 
     public static QuizDto from(Quiz quiz) {
@@ -144,6 +158,4 @@ public class QuizDto {
         return dto;
     }
 
-    
-    
 }
