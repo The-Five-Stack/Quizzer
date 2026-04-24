@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 import quizzer.fivestack.project.repository.QuizRepository;
 import quizzer.fivestack.project.repository.UserRepository;
+import quizzer.fivestack.project.repository.CategoryRepository;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,6 +24,7 @@ import quizzer.fivestack.project.domain.Answer;
 import quizzer.fivestack.project.domain.Question;
 import quizzer.fivestack.project.domain.Quiz;
 import quizzer.fivestack.project.domain.User;
+import quizzer.fivestack.project.domain.Category;
 import quizzer.fivestack.project.dto.AnswerDto;
 import quizzer.fivestack.project.dto.QuestionDto;
 import quizzer.fivestack.project.dto.QuizDto;
@@ -39,12 +41,14 @@ import java.util.List;
 @CrossOrigin(origins = { "http://localhost:5173", "https://quizzer-ui.onrender.com" })
 public class QuizRestController {
     private final QuizRepository repository;
-
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
-    public QuizRestController(QuizRepository repository, UserRepository userRepository) {
+    public QuizRestController(QuizRepository repository, UserRepository userRepository,
+            CategoryRepository categoryRepository) {
         this.repository = repository;
         this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @PostMapping("/create")
@@ -63,6 +67,12 @@ public class QuizRestController {
         newQuiz.setIsPublished(dto.getPublished());
 
         newQuiz.setOwner(currentUser);
+
+        if (dto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found with id: " + dto.getCategoryId()));
+            newQuiz.setCategory(category);
+        }
 
         Quiz saveQuiz = repository.save(newQuiz);
 
@@ -187,6 +197,14 @@ public class QuizRestController {
         if (quiz.getOwner() == null || !quiz.getOwner().getUsername().equals(principal.getName())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Map.of("error", "Not your quiz"));
+        }
+
+        if (dto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found with id: " + dto.getCategoryId()));
+            quiz.setCategory(category);
+        } else {
+            quiz.setCategory(null); // allow removing category
         }
 
         quiz.setQuizName(dto.getName());
