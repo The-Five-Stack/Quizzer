@@ -55,8 +55,12 @@ public class QuizRestController {
     public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizDto dto, Principal principal) {
         // Check current username
         String currentUsername = principal.getName();
-        User currentUser = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Optional<User> userOpt = userRepository.findByUsername(currentUsername);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "User not found: " + currentUsername));
+        }
+        User currentUser = userOpt.get();
 
         // Check user in database
         Quiz newQuiz = new Quiz();
