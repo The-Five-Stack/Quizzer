@@ -69,9 +69,12 @@ public class QuizRestController {
         newQuiz.setOwner(currentUser);
 
         if (dto.getCategoryId() != null) {
-            Category category = categoryRepository.findById(dto.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found with id: " + dto.getCategoryId()));
-            newQuiz.setCategory(category);
+            Optional<Category> categoryOpt = categoryRepository.findById(dto.getCategoryId());
+            if (categoryOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Category not found with id: " + dto.getCategoryId()));
+            }
+            newQuiz.setCategory(categoryOpt.get());
         }
 
         Quiz saveQuiz = repository.save(newQuiz);
@@ -200,11 +203,14 @@ public class QuizRestController {
         }
 
         if (dto.getCategoryId() != null) {
-            Category category = categoryRepository.findById(dto.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found with id: " + dto.getCategoryId()));
-            quiz.setCategory(category);
+            Optional<Category> categoryOpt = categoryRepository.findById(dto.getCategoryId());
+            if (categoryOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Category not found with id: " + dto.getCategoryId()));
+            }
+            quiz.setCategory(categoryOpt.get());
         } else {
-            quiz.setCategory(null); // allow removing category
+            quiz.setCategory(null);
         }
 
         quiz.setQuizName(dto.getName());
