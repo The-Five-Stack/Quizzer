@@ -3,6 +3,9 @@ package quizzer.fivestack.project.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import quizzer.fivestack.project.repository.CategoryRepository;
+import quizzer.fivestack.project.repository.QuizRepository;
+import quizzer.fivestack.project.domain.Quiz;
+import quizzer.fivestack.project.dto.QuizDto;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +31,11 @@ import java.util.Optional;
 public class CategoryRestController {
 
     private final CategoryRepository categoryRepository;
+    private final QuizRepository quizRepository;
 
-    public CategoryRestController(CategoryRepository categoryRepository) {
+    public CategoryRestController(CategoryRepository categoryRepository, QuizRepository quizRepository) {
         this.categoryRepository = categoryRepository;
+        this.quizRepository = quizRepository;
     }
 
     // Create a new category
@@ -96,5 +101,20 @@ public class CategoryRestController {
         categoryRepository.delete(categoryOpt.get());
 
         return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
+    // Get published quizzes by category
+    @GetMapping("/{id}/published-quizzes")
+    public ResponseEntity<List<QuizDto>> getPublishedQuizzesByCategory(@PathVariable Long id) {
+        if (!categoryRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        List<Quiz> quizzes = quizRepository.findByCategoryIdAndIsPublishedTrue(id);
+        List<QuizDto> quizDtos = quizzes.stream()
+                .map(QuizDto::from)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(quizDtos);
     }
 }
