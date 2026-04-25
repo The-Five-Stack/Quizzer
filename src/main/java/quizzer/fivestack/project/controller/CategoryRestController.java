@@ -106,9 +106,7 @@ public class CategoryRestController {
     // Get published quizzes by category
     @GetMapping("/{id}/published-quizzes")
     public ResponseEntity<?> getPublishedQuizzesByCategory(@PathVariable Long id) {
-        Optional<Category> categoryOpt = categoryRepository.findById(id);
-
-        if (categoryOpt.isEmpty()) {
+        if (!categoryRepository.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", "Category not found with id: " + id));
         }
