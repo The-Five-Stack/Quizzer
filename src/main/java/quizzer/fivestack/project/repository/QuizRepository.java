@@ -22,4 +22,5 @@ public interface QuizRepository extends CrudRepository<Quiz, Long> {
     @Query("SELECT q FROM Quiz q WHERE q.quizId = :id")
     Optional<Quiz> findWithQuestionsAndAnswersById(@Param("id") Long id);
 
+    List<Quiz> findByCategoryIdAndIsPublishedTrue(Long categoryId);
 }
