@@ -1,6 +1,7 @@
 package quizzer.fivestack.project.service;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import quizzer.fivestack.project.domain.*;
@@ -30,16 +31,16 @@ public class StudentAnswerService {
     public StudentAnswerResponse submitAnswer(StudentAnswerRequest request, Principal principal) {
         String username = principal.getName();
         User student = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         Answer selectedAnswer = answerRepository.findById(request.getAnswerOptionId())
-                .orElseThrow(() -> new RuntimeException("Answer option not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Answer option not found"));
 
         Question question = selectedAnswer.getQuestion();
         Quiz quiz = question.getQuiz();
 
         if (quiz.getIsPublished() == null || !quiz.getIsPublished()) {
-            throw new RuntimeException("Quiz is not published");
+            throw new IllegalStateException("Quiz is not published");
         }
 
         // Allow redo via delete existing answered based on User and Question id
