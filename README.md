@@ -75,3 +75,120 @@ https://quizzer-ui.onrender.com/student
 
 ## Retrospectives
 https://edu.flinga.fi/s/EKJFXSK
+
+
+## Data Model
+### Entity Relationship Diagram
+```mermaid
+erDiagram
+    USER ||--o{ QUIZ : "teacher_owns"
+    CATEGORY ||--o{ QUIZ : "categorizes"
+    QUIZ ||--o{ QUESTION : "contains"
+    QUESTION ||--o{ ANSWER : "has"
+    USER ||--o{ STUDENT_ANSWER : "student_submits"
+    QUIZ ||--o{ STUDENT_ANSWER : "is_taken_in"
+    QUESTION ||--o{ STUDENT_ANSWER : "is_answered_in"
+    ANSWER ||--o{ STUDENT_ANSWER : "is_selected"
+
+    USER {
+        Long id PK
+        String username UK
+        String fullname
+        String firstName
+        String lastName
+        String email UK
+        String password
+        Boolean enabled
+        LocalDateTime createdAt
+        LocalDateTime updatedAt
+    }
+
+    CATEGORY {
+        Long id PK
+        String name
+        String description
+    }
+
+    QUIZ {
+        Long quizId PK
+        String quizName
+        String quizDescription
+        String courseCode
+        Boolean isPublished
+        LocalDateTime createdAt
+        Long category_id FK
+        Long owner_id FK
+    }
+
+    QUESTION {
+        Long questionId PK
+        String questionContent
+        Difficulty difficulty "EASY | NORMAL | HARD"
+        Long quiz_id FK
+    }
+
+    ANSWER {
+        Long answerId PK
+        String answerContent
+        Boolean isCorrect
+        Long question_id FK
+    }
+
+    STUDENT_ANSWER {
+        Long id PK
+        Long user_id FK
+        Long quiz_id FK
+        Long question_id FK
+        Long selected_answer_id FK
+        Boolean isCorrect
+        LocalDateTime submittedAt
+    }
+```
+
+
+### Data Model Description
+
+The **Quizzer** application uses **Basic Authentication** (Spring Security) and consists of the following main entities:
+
+#### 1. **User**
+- Represents both **teachers** and **students** in the system
+- Stores authentication credentials (username and password) and profile information
+- A user can own multiple quizzes (as a teacher) and submit answers to quizzes (as a student)
+
+#### 2. **Category**
+- Used to organize quizzes by topic ("Agile", "Databases", "Java", etc...)
+- One category can be assigned to many quizzes.
+
+#### 3. **Quiz**
+- The central entity of the application.
+- Contains metadata such as name, description, course code, published status, and creation date.
+- Each quiz belongs to **one** teacher (`owner`) and **one** category
+
+#### 4. **Question**
+- Represents a single multiple-choice question inside a quiz
+- Contains the question content and a difficulty level (`EASY`, `NORMAL`, `HARD`)
+- One quiz can have many questions.
+
+#### 5. **Answer**
+- Represents one possible answer option for a question
+- Contains the answer text and a boolean flag indicating whether it is the correct answer
+- One question can have multiple answers.
+
+#### 6. **StudentAnswer**
+- Tracks individual student responses
+- Records which student answered which question in which quiz, the selected answer, and whether it was correct
+- Enables the calculation of quiz results and statistics
+
+
+### Relationship Summary
+
+| Relationship                    | Type          | Description |
+|-------------------------------|---------------|-----------|
+| User → Quiz                   | One-to-Many   | A teacher owns multiple quizzes |
+| Category → Quiz               | One-to-Many   | A category contains many quizzes |
+| Quiz → Question               | One-to-Many   | A quiz contains many questions |
+| Question → Answer             | One-to-Many   | A question has multiple answer options |
+| User → StudentAnswer          | One-to-Many   | A user can submit many answers |
+| Quiz → StudentAnswer          | One-to-Many   | A quiz can have many student submissions |
+| Question → StudentAnswer      | One-to-Many   | A question can be answered by many students |
+| Answer → StudentAnswer        | One-to-Many   | An answer option can be selected by many students |
