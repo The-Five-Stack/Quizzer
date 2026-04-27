@@ -234,13 +234,20 @@ public class QuizRestController {
 
     // Get quiz results endpoint
     @GetMapping("/{quizId}/results")
-    public ResponseEntity<?> getQuizResults(@PathVariable Long quizId) { // <?> is ok here because we can return either
-                                                                         // List<QuestionResultDto> or error message
-        if (!repository.existsById(quizId)) {
+    public ResponseEntity<?> getQuizResults(@PathVariable Long quizId, Principal principal) { // <?> is ok here because we can return either
+                                                                                              // List<QuestionResultDto> or error message
+        Optional<Quiz> quizOpt = repository.findById(quizId);
+
+        Quiz quiz = quizOpt.orElse(null);
+        if (quiz == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", "Quiz not found with id: " + quizId));
         }
 
+        if (quiz.getOwner() == null || !quiz.getOwner().getUsername().equals(principal.getName())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Not your quiz"));
+        }
         List<Object[]> results = studentAnswerRepository.findQuizResultsByQuizId(quizId);
 
         List<QuestionResultDto> resultDtos = results.stream()
