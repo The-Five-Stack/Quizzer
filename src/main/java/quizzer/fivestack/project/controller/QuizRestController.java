@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import quizzer.fivestack.project.repository.QuizRepository;
 import quizzer.fivestack.project.repository.UserRepository;
 import quizzer.fivestack.project.repository.CategoryRepository;
+import quizzer.fivestack.project.repository.StudentAnswerRepository;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,7 +28,10 @@ import quizzer.fivestack.project.domain.User;
 import quizzer.fivestack.project.domain.Category;
 import quizzer.fivestack.project.dto.AnswerDto;
 import quizzer.fivestack.project.dto.QuestionDto;
+import quizzer.fivestack.project.dto.QuestionResultDto;
 import quizzer.fivestack.project.dto.QuizDto;
+import quizzer.fivestack.project.enums.Difficulty;
+
 import java.util.stream.Collectors;
 
 import java.security.Principal;
@@ -43,12 +47,14 @@ public class QuizRestController {
     private final QuizRepository repository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final StudentAnswerRepository studentAnswerRepository;
 
     public QuizRestController(QuizRepository repository, UserRepository userRepository,
-            CategoryRepository categoryRepository) {
+            CategoryRepository categoryRepository, StudentAnswerRepository studentAnswerRepository) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.studentAnswerRepository = studentAnswerRepository;
     }
 
     @PostMapping("/create")
@@ -226,4 +232,33 @@ public class QuizRestController {
                 Map.of("message", "Quiz updated successfully", "quizId", saved.getQuizId()));
     }
 
+    // Get quiz results endpoint
+    @GetMapping("/{quizId}/results")
+    public ResponseEntity<?> getQuizResults(@PathVariable Long quizId, Principal principal) { // <?> is ok here because we can return either
+                                                                                              // List<QuestionResultDto> or error message
+        Optional<Quiz> quizOpt = repository.findById(quizId);
+
+        Quiz quiz = quizOpt.orElse(null);
+        if (quiz == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Quiz not found with id: " + quizId));
+        }
+
+        if (quiz.getOwner() == null || !quiz.getOwner().getUsername().equals(principal.getName())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Not your quiz"));
+        }
+        List<Object[]> results = studentAnswerRepository.findQuizResultsByQuizId(quizId);
+
+        List<QuestionResultDto> resultDtos = results.stream()
+                .map(row -> new QuestionResultDto(
+                        (Long) row[0],
+                        (String) row[1],
+                        (Difficulty) row[2],
+                        ((Number) row[3]).intValue(),
+                        ((Number) row[4]).intValue()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(resultDtos);
+    }
 }
