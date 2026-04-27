@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
 
 import quizzer.fivestack.project.domain.Category;
@@ -27,6 +32,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/categories")
+@Tag(name = "Categories", description = "Operations related to category management")
 @CrossOrigin(origins = { "http://localhost:5173", "https://quizzer-ui.onrender.com" })
 public class CategoryRestController {
 
@@ -38,6 +44,11 @@ public class CategoryRestController {
         this.quizRepository = quizRepository;
     }
 
+    @Operation(summary = "Create a new category", description = "Creates a new quiz category")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Category created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     // Create a new category
     @PostMapping
     public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryDto dto) {
@@ -53,6 +64,11 @@ public class CategoryRestController {
                 "categoryId", savedCategory.getId()));
     }
 
+    @Operation(summary = "Get category by ID", description = "Returns a single category by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved category"),
+            @ApiResponse(responseCode = "404", description = "Category not found")
+    })
     // Get category by ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getCategoryById(@PathVariable Long id) {
@@ -72,6 +88,10 @@ public class CategoryRestController {
         return ResponseEntity.ok(dto);
     }
 
+    @Operation(summary = "Get all categories", description = "Returns a list of all categories")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of categories")
+    })
     // Get all categories
     @GetMapping
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
@@ -88,6 +108,11 @@ public class CategoryRestController {
         return ResponseEntity.ok(categories);
     }
 
+    @Operation(summary = "Delete category by ID", description = "Deletes a category by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Category deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Category not found")
+    })
     // Delete category by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
@@ -103,6 +128,11 @@ public class CategoryRestController {
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
+    @Operation(summary = "Get published quizzes by category", description = "Returns all published quizzes that belong to the specified category")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved published quizzes"),
+            @ApiResponse(responseCode = "404", description = "Category not found")
+    })
     // Get published quizzes by category
     @GetMapping("/{id}/published-quizzes")
     public ResponseEntity<List<QuizDto>> getPublishedQuizzesByCategory(@PathVariable Long id) {

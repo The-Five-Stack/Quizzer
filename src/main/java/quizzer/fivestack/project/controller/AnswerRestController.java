@@ -8,6 +8,11 @@ import quizzer.fivestack.project.repository.AnswerRepository;
 import quizzer.fivestack.project.repository.QuestionRepository;
 import quizzer.fivestack.project.domain.Answer;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +27,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/questions")
-@CrossOrigin(origins = {"http://localhost:5173", "https://quizzer-ui.onrender.com"})
+@Tag(name = "Answers", description = "Operations for managing answers within questions")
+@CrossOrigin(origins = { "http://localhost:5173", "https://quizzer-ui.onrender.com" })
 public class AnswerRestController {
     private final AnswerRepository answerRepository;
 
@@ -33,13 +39,18 @@ public class AnswerRestController {
         this.questionRepository = questionRepository;
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Answer created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "403", description = "User is not the owner of the quiz"),
+            @ApiResponse(responseCode = "404", description = "Question not found")
+    })
     @PostMapping("/{questionId}/answers")
     public ResponseEntity<?> addAnswertoQuestion(@PathVariable Long questionId, @Valid @RequestBody AnswerDto dto,
             Principal principal) {
 
         // check Question by questionId
         quizzer.fivestack.project.domain.Question question = questionRepository.findById(questionId).orElse(null);
-        
 
         if (question == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -68,6 +79,12 @@ public class AnswerRestController {
                 "answerId", saveAnswer.getAnswerId()));
     }
 
+    @Operation(summary = "Delete an answer from a question", description = "Deletes a specific answer by ID. Requires ownership of the parent quiz.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Answer deleted successfully"),
+            @ApiResponse(responseCode = "403", description = "User is not the owner of the quiz"),
+            @ApiResponse(responseCode = "404", description = "Question or Answer not found")
+    })
     @DeleteMapping("{questionId}/answers/{answerId}")
     public ResponseEntity<?> deleteAnswerFromQuestion(@PathVariable Long questionId, @PathVariable Long answerId,
             Principal principal) {
