@@ -16,6 +16,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.validation.Valid;
@@ -38,6 +44,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/quizzes")
+@Tag(name = "Quizzes", description = "Operations related to quiz management")
 @CrossOrigin(origins = { "http://localhost:5173", "https://quizzer-ui.onrender.com" })
 public class QuizRestController {
     private final QuizRepository repository;
@@ -51,6 +58,12 @@ public class QuizRestController {
         this.categoryRepository = categoryRepository;
     }
 
+    @Operation(summary = "Create a new quiz", description = "Creates a new quiz linked to the authenticated user")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Quiz created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data"),
+        @ApiResponse(responseCode = "404", description = "Category or User not found")
+    })
     @PostMapping("/create")
     public ResponseEntity<?> createQuiz(@Valid @RequestBody QuizDto dto, Principal principal) {
         // Check current username
@@ -88,6 +101,11 @@ public class QuizRestController {
 
     // Get quiz by ID endpoint
     @Transactional(readOnly = true)
+    @Operation(summary = "Get quiz by ID", description = "Returns a full quiz with questions and answers if the user is the owner")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved quiz"),
+        @ApiResponse(responseCode = "404", description = "Quiz not found or user is not the owner")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<?> getQuizById(@PathVariable Long id, Principal principal) {
         Optional<Quiz> quizOpt = repository.findWithQuestionsAndAnswersById(id);
@@ -115,6 +133,10 @@ public class QuizRestController {
         return ResponseEntity.ok(dto);
     }
 
+    @Operation(summary = "Get all quizzes", description = "Returns a list of all existing quizzes")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
+    })
     @GetMapping
     public ResponseEntity<List<QuizDto>> getAllQuizzes() {
         List<QuizDto> quizzes = ((List<Quiz>) repository.findAll())
@@ -126,6 +148,11 @@ public class QuizRestController {
     }
 
     // Endpoint to delete a quiz by quizId
+    @Operation(summary = "Delete a quiz", description = "Deletes a quiz by ID if the authenticated user is the owner")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Quiz deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Quiz not found or user is not the owner")
+    })
     @DeleteMapping("/{quizId}")
     public ResponseEntity<?> deleteQuiz(@PathVariable Long quizId, Principal principal) {
 
@@ -175,6 +202,10 @@ public class QuizRestController {
     }
 
     // filter quizz by published
+    @Operation(summary = "Get published quizzes", description = "Returns all quizzes where published status is true")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved published quizzes")
+    })
     @GetMapping("/publishedquizz")
     public ResponseEntity<List<QuizDto>> getAllPublishedQuizzes() {
         List<QuizDto> quizzes = repository.findByIsPublishedTrue()
@@ -186,6 +217,12 @@ public class QuizRestController {
     }
 
     // Edit, update quiz endpoint
+    @Operation(summary = "Update an existing quiz", description = "Updates quiz details. Only the owner can perform this action.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Quiz updated successfully"),
+        @ApiResponse(responseCode = "403", description = "User is not the owner"),
+        @ApiResponse(responseCode = "404", description = "Quiz or Category not found")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<?> editQuiz(
             @PathVariable Long id,
