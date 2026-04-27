@@ -29,6 +29,7 @@ public interface StudentAnswerRepository extends CrudRepository<StudentAnswer, L
             "COUNT(sa.id) AS answerCount, " +
             "SUM(CASE WHEN sa.isCorrect = true THEN 1L ELSE 0L END) AS correctCount " +
             "FROM StudentAnswer sa WHERE sa.quiz.quizId = :quizId " +
-            "GROUP BY sa.question.questionId, sa.question.questionContent, sa.question.difficulty")
+            "GROUP BY sa.question.questionId, sa.question.questionContent, sa.question.difficulty " +
+            "ORDER BY sa.question.questionId")
     List<QuizResultProjection> findQuizResultsByQuizId(@Param("quizId") Long quizId);
 }
