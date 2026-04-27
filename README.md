@@ -24,6 +24,7 @@ Members:
 <li> <a href= "https://github.com/tripham-fi"> Tri Pham </a> </li>
 <li> <a href= "https://github.com/HaniNghi"> Nghi Vo </a> </li>
 <li><a href= "https://github.com/sadikshyeah"> Sadikshya Parajuli</a></li>
+</ul>
 
 <h2> Backlog</h2>
 <li><a href="https://github.com/orgs/The-Five-Stack/projects/2">Backlog for Quizzer</a></li>
