@@ -185,9 +185,13 @@ The **Quizzer** application uses **Basic Authentication** (Spring Security) and 
 | Relationship                    | Type          | Description |
 |-------------------------------|---------------|-----------|
 | User → Quiz                   | One-to-Many   | A teacher owns multiple quizzes |
+| Quiz → User (owner)                | Many-to-One      | Many quizzes belong to one teacher |
 | Category → Quiz               | One-to-Many   | A category contains many quizzes |
+| Quiz → Category                    | Many-to-One      | Many quizzes belong to one category |
 | Quiz → Question               | One-to-Many   | A quiz contains many questions |
+| Question → Quiz                    | Many-to-One      | Many questions belong to one quiz |
 | Question → Answer             | One-to-Many   | A question has multiple answer options |
+| Answer → Question                  | Many-to-One      | Many answers belong to one question |
 | User ↔ Answer (via StudentAnswer)   | Many-to-Many      | Students select answers to questions |
 | User → StudentAnswer                | One-to-Many       | A user can have many answer submissions |
 | Quiz → StudentAnswer          | One-to-Many     | One quiz can have many student submissions |
