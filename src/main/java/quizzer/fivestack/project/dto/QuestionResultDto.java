@@ -1,15 +1,17 @@
 package quizzer.fivestack.project.dto;
 
+import quizzer.fivestack.project.enums.Difficulty;
+
 public class QuestionResultDto {
     private Long questionId;
     private String questionText;
-    private String questionDifficulty;
+    private Difficulty questionDifficulty;
     private int totalAnswers;
     private int correctAnswers;
     private int wrongAnswers;
     private double correctPercentage;
 
-    public QuestionResultDto(Long questionId, String questionText, String questionDifficulty,
+    public QuestionResultDto(Long questionId, String questionText, Difficulty questionDifficulty,
             int totalAnswers, int correctAnswers) {
         this.questionId = questionId;
         this.questionText = questionText;
@@ -30,7 +32,7 @@ public class QuestionResultDto {
         return questionText;
     }
 
-    public String getQuestionDifficulty() {
+    public Difficulty getQuestionDifficulty() {
         return questionDifficulty;
     }
 
@@ -53,6 +55,7 @@ public class QuestionResultDto {
     @Override
     public String toString() {
         return "QuestionResultDto [questionId=" + questionId + ", questionText=" + questionText +
-                ", totalAnswers=" + totalAnswers + ", correctAnswers=" + correctAnswers + "]";
+                ", questionDifficulty=" + questionDifficulty + ", totalAnswers=" + totalAnswers + ", correctAnswers="
+                + correctAnswers + "]";
     }
 }

@@ -30,6 +30,8 @@ import quizzer.fivestack.project.dto.AnswerDto;
 import quizzer.fivestack.project.dto.QuestionDto;
 import quizzer.fivestack.project.dto.QuestionResultDto;
 import quizzer.fivestack.project.dto.QuizDto;
+import quizzer.fivestack.project.enums.Difficulty;
+
 import java.util.stream.Collectors;
 
 import java.security.Principal;
@@ -245,7 +247,7 @@ public class QuizRestController {
                 .map(row -> new QuestionResultDto(
                         (Long) row[0],
                         (String) row[1],
-                        row[2].toString(),
+                        (Difficulty) row[2],
                         ((Number) row[3]).intValue(),
                         ((Number) row[4]).intValue()))
                 .collect(Collectors.toList());
