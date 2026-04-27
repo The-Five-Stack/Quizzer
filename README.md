@@ -20,10 +20,11 @@ Members:
 <h2> Our github links: </h2>
 <ul>
 <li><a href="https://github.com/lunapham10">Oanh Pham </a> </li>
-<li><a href= "https://github.com/qynwphuu"> Ouy Tran </a> </li>
+<li><a href= "https://github.com/qynwphuu"> Quy Tran </a> </li>
 <li> <a href= "https://github.com/tripham-fi"> Tri Pham </a> </li>
 <li> <a href= "https://github.com/HaniNghi"> Nghi Vo </a> </li>
 <li><a href= "https://github.com/sadikshyeah"> Sadikshya Parajuli</a></li>
+</ul>
 
 <h2> Backlog</h2>
 <li><a href="https://github.com/orgs/The-Five-Stack/projects/2">Backlog for Quizzer</a></li>
@@ -62,6 +63,15 @@ Once the terminal shows "Started ProjectApplication", open your web browser and 
 #### URL of the backend application
 https://quizzer-git-quizzer-project.2.rahtiapp.fi
 
+#### REST API
+https://quizzer-git-quizzer-project.2.rahtiapp.fi/swagger-ui/index.html
+
 ### Frontend
-#### URL of the frontend application
+#### Teacher Dashboard
 https://quizzer-ui.onrender.com
+
+#### Student Dashboard
+https://quizzer-ui.onrender.com/student
+
+## Retrospectives
+https://edu.flinga.fi/s/EKJFXSK
