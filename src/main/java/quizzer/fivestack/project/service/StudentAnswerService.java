@@ -43,9 +43,6 @@ public class StudentAnswerService {
             throw new IllegalStateException("Quiz is not published");
         }
 
-        // Allow redo via delete existing answered based on User and Question id
-        studentAnswerRepository.deleteByUserAndQuestion(student, question);
-
         boolean isCorrect = selectedAnswer.getIsCorrect();
         studentAnswerRepository.save(new StudentAnswer(
                 student,
