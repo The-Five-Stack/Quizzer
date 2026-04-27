@@ -188,5 +188,8 @@ The **Quizzer** application uses **Basic Authentication** (Spring Security) and 
 | Category → Quiz               | One-to-Many   | A category contains many quizzes |
 | Quiz → Question               | One-to-Many   | A quiz contains many questions |
 | Question → Answer             | One-to-Many   | A question has multiple answer options |
-| User → StudentAnswer          | One-to-Many   | A user can submit many answers |
-| Answer → StudentAnswer        | One-to-Many   | An answer option can be selected by many students |
+| User ↔ Answer (via StudentAnswer)   | Many-to-Many      | Students select answers to questions |
+| User → StudentAnswer                | One-to-Many       | A user can have many answer submissions |
+| Quiz → StudentAnswer          | One-to-Many     | One quiz can have many student submissions |
+| Question → StudentAnswer      | One-to-Many     | One question can be answered by many students |
+| Answer → StudentAnswer        | One-to-Many     | One answer option can be selected by many students |
