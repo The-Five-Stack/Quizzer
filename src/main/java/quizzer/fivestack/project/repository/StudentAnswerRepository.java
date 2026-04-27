@@ -13,23 +13,14 @@ import java.util.List;
 
 @Repository
 public interface StudentAnswerRepository extends CrudRepository<StudentAnswer, Long> {
-    interface QuizResultProjection {
-        Long getQuestionId();
-        String getQuestionContent();
-        Object getDifficulty();
-        Long getAnswerCount();
-        Long getCorrectCount();
-    }
 
     void deleteByUserAndQuestion(User user, Question question);
 
-    @Query("SELECT sa.question.questionId AS questionId, " +
-            "sa.question.questionContent AS questionContent, " +
-            "sa.question.difficulty AS difficulty, " +
-            "COUNT(sa.id) AS answerCount, " +
-            "SUM(CASE WHEN sa.isCorrect = true THEN 1L ELSE 0L END) AS correctCount " +
+    // TODO: Consider refactoring to interface-based projection for type safety
+    @Query("SELECT sa.question.questionId, sa.question.questionContent, sa.question.difficulty, " +
+            "COUNT(sa.id), SUM(CASE WHEN sa.isCorrect = true THEN 1L ELSE 0L END) " +
             "FROM StudentAnswer sa WHERE sa.quiz.quizId = :quizId " +
             "GROUP BY sa.question.questionId, sa.question.questionContent, sa.question.difficulty " +
             "ORDER BY sa.question.questionId")
-    List<QuizResultProjection> findQuizResultsByQuizId(@Param("quizId") Long quizId);
+    List<Object[]> findQuizResultsByQuizId(@Param("quizId") Long quizId);
 }
