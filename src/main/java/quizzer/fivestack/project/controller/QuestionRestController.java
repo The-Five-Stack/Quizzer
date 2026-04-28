@@ -5,6 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,7 +28,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/quizzes")
-@CrossOrigin(origins = {"http://localhost:5173", "https://quizzer-ui.onrender.com"})
+@Tag(name = "Questions", description = "Operations for managing questions within quizzes")
+@CrossOrigin(origins = { "http://localhost:5173", "https://quizzer-ui.onrender.com" })
 public class QuestionRestController {
     private final QuestionRepository questionRepository;
     private final QuizRepository repository;
@@ -34,9 +39,16 @@ public class QuestionRestController {
         this.repository = repository;
     }
 
+    @Operation(summary = "Add a question to a quiz", description = "Creates a new question and links it to an existing quiz. Only the quiz owner can perform this action.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Question created successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: User is not the owner of the quiz"),
+            @ApiResponse(responseCode = "404", description = "Quiz not found")
+    })
     @PostMapping("/{quizId}/questions")
-    public ResponseEntity<?> addQuestionToQuiz(@PathVariable Long quizId, @Valid @RequestBody QuestionDto dto, Principal principal) {
-        
+    public ResponseEntity<?> addQuestionToQuiz(@PathVariable Long quizId, @Valid @RequestBody QuestionDto dto,
+            Principal principal) {
+
         // check Quiz by quizId
         quizzer.fivestack.project.domain.Quiz quiz = repository.findById(quizId)
                 .orElse(null);
@@ -47,14 +59,14 @@ public class QuestionRestController {
         }
 
         // Check owner of quiz
-        String currentUsername = principal.getName(); 
+        String currentUsername = principal.getName();
         if (!quiz.getOwner().getUsername().equals(currentUsername)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(Map.of("error", "You are not the owner of this quiz!"));
+                    .body(Map.of("error", "You are not the owner of this quiz!"));
         }
 
         Question newQuestion = new Question();
-        
+
         newQuestion.setQuestionContent(dto.getQuestionContent());
         newQuestion.setDifficulty(dto.getDifficulty());
         newQuestion.setQuiz(quiz);
@@ -66,6 +78,15 @@ public class QuestionRestController {
                 "questionId", saveQuestion.getQuestionId()));
     }
 
+    @Operation(
+        summary = "Delete a question from a quiz",
+        description = "Deletes a specific question by ID. Requires ownership of the parent quiz."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Question deleted successfully"),
+        @ApiResponse(responseCode = "403", description = "Forbidden: User is not the owner"),
+        @ApiResponse(responseCode = "404", description = "Quiz or Question not found")
+    })
     @DeleteMapping("{quizId}/questions/{questionId}")
     public ResponseEntity<?> deleteQuestionFromQuiz(@PathVariable Long quizId, @PathVariable Long questionId,
             Principal principal) {
@@ -101,5 +122,5 @@ public class QuestionRestController {
                 "questionId", questionId,
                 "quizId", quizId));
     }
-    
+
 }
