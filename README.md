@@ -71,7 +71,7 @@ https://teacher:teacher123@quizzer-git-quizzer-project.2.rahtiapp.fi/swagger-ui/
 https://quizzer-ui.onrender.com
 
 #### Student Dashboard
-https://quizzer-ui.onrender.com/student
+https://quizzer-ui.onrender.com/publishedquizz
 
 ## Retrospectives
 https://edu.flinga.fi/s/EKJFXSK
