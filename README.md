@@ -61,10 +61,10 @@ Use the Maven Wrapper (./mvnw) to start the Spring Boot application. This ensure
 Once the terminal shows "Started ProjectApplication", open your web browser and visit: http://localhost:8080
 
 #### URL of the backend application
-https://quizzer-git-quizzer-project.2.rahtiapp.fi
+https://teacher:teacher123@quizzer-git-quizzer-project.2.rahtiapp.fi/
 
 #### REST API
-https://quizzer-git-quizzer-project.2.rahtiapp.fi/swagger-ui/index.html
+https://teacher:teacher123@quizzer-git-quizzer-project.2.rahtiapp.fi/swagger-ui/index.html
 
 ### Frontend
 #### Teacher Dashboard
