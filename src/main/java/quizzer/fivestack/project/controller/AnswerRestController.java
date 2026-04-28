@@ -88,7 +88,7 @@ public class AnswerRestController {
                         @ApiResponse(responseCode = "403", description = "User is not the owner of the quiz"),
                         @ApiResponse(responseCode = "404", description = "Question or Answer not found")
         })
-        @DeleteMapping("{questionId}/answers/{answerId}")
+        @DeleteMapping("/{questionId}/answers/{answerId}")
         public ResponseEntity<?> deleteAnswerFromQuestion(@PathVariable Long questionId, @PathVariable Long answerId,
                         Principal principal) {
 
