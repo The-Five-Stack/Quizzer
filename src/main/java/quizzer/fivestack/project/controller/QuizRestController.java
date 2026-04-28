@@ -270,6 +270,28 @@ public class QuizRestController {
     }
 
     // Get quiz results endpoint
+    @Operation(
+        summary = "Get quiz results", 
+        description = "Returns an overview of student performance for a specific quiz, including correct answer counts. Only the quiz owner can view these results."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", 
+            description = "Successfully retrieved results list"
+        ),
+        @ApiResponse(
+            responseCode = "401", 
+            description = "Authentication is required to view results"
+        ),
+        @ApiResponse(
+            responseCode = "403", 
+            description = "Forbidden: You are not the owner of this quiz"
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Quiz not found with the provided ID"
+        )
+    })
     @GetMapping("/{quizId}/results")
     public ResponseEntity<?> getQuizResults(@PathVariable Long quizId, Principal principal) { // <?> is ok here because we can return either
                                                                                               // List<QuestionResultDto> or error message
