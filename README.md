@@ -74,7 +74,10 @@ https://quizzer-ui.onrender.com
 https://quizzer-ui.onrender.com/student
 
 ## Retrospectives
+- Sprint 1
 https://edu.flinga.fi/s/EKJFXSK
+- Sprint 2
+https://edu.flinga.fi/s/EVGX2MH
 
 
 ## Data Model
