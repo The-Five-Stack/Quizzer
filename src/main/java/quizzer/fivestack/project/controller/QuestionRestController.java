@@ -115,7 +115,9 @@ public class QuestionRestController {
                     .body(Map.of("error", "Question not found with id: " + questionId + " in quiz: " + quizId));
         }
 
-        questionRepository.delete(questionOpt.get());
+        Question question = questionOpt.get();
+        question.setDeleted(true);
+        questionRepository.save(question);
 
         return ResponseEntity.ok(Map.of(
                 "message", "Question and related answers deleted successfully",

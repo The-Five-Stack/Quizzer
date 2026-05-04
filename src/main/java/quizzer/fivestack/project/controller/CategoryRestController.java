@@ -123,7 +123,9 @@ public class CategoryRestController {
                     .body(Map.of("error", "Category not found with id: " + id));
         }
 
-        categoryRepository.delete(categoryOpt.get());
+        Category category = categoryOpt.get();
+        category.setDeleted(true);
+        categoryRepository.save(category);;
 
         return ResponseEntity.noContent().build(); // 204 No Content
     }

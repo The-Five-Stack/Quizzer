@@ -174,7 +174,8 @@ public class QuizRestController {
                     .body(Map.of("error", "Quiz not found with id: " + quizId));
         }
 
-        repository.delete(quiz);
+        quiz.setDeleted(true);
+        repository.save(quiz);
 
         return ResponseEntity.ok(
                 Map.of("message", "Quiz deleted successfully",

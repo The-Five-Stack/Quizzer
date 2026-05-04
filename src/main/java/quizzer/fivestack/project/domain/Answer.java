@@ -10,8 +10,11 @@ import jakarta.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 
 @Entity
+@SoftDelete(strategy = SoftDeleteType.ACTIVE)
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +30,9 @@ public class Answer {
     @ManyToOne
     @JoinColumn(name="questionId")
     private Question question;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     public Answer() {
 
@@ -69,6 +75,14 @@ public class Answer {
 
     public void setQuestion(Question question) {
         this.question = question;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override
