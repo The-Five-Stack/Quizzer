@@ -15,7 +15,7 @@ import org.hibernate.annotations.SoftDelete;
 import org.hibernate.annotations.SoftDeleteType;
 
 @Entity
-@SoftDelete(strategy = SoftDeleteType.ACTIVE)
+@SoftDelete(strategy = SoftDeleteType.DELETED)
 public class Category {
 
     @Id
@@ -30,7 +30,7 @@ public class Category {
     @Column(length = 255)
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false, updatable = false)
     private boolean deleted = false;
 
     public Category() {

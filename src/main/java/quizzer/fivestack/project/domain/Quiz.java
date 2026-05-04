@@ -12,7 +12,7 @@ import org.hibernate.annotations.SoftDeleteType;
 
 
 @Entity
-@SoftDelete(strategy = SoftDeleteType.ACTIVE)
+@SoftDelete(strategy = SoftDeleteType.DELETED)
 public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +47,7 @@ public class Quiz {
     private Category category;
 
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false, updatable = false)
     private boolean deleted = false;
 
     public Quiz(){

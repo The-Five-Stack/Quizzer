@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 
 @Entity
-@SoftDelete(strategy = SoftDeleteType.ACTIVE)
+@SoftDelete(strategy = SoftDeleteType.DELETED)
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +42,7 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
     private List<Answer> answers;
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false, updatable = false)
     private boolean deleted = false;
 
     public Question() {

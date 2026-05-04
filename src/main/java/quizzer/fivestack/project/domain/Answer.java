@@ -14,7 +14,7 @@ import org.hibernate.annotations.SoftDelete;
 import org.hibernate.annotations.SoftDeleteType;
 
 @Entity
-@SoftDelete(strategy = SoftDeleteType.ACTIVE)
+@SoftDelete(strategy = SoftDeleteType.DELETED)
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public class Answer {
     @JoinColumn(name="questionId")
     private Question question;
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false, updatable = false)
     private boolean deleted = false;
 
     public Answer() {

@@ -120,9 +120,7 @@ public class AnswerRestController {
                                                         + " for question: " + questionId));
                 }
 
-                Answer answer = answerOpt.get();
-                answer.setDeleted(true);
-                answerRepository.save(answer);
+                answerRepository.delete(answerOpt.get());
 
                 return ResponseEntity.ok(Map.of(
                                 "message", "Answer deleted successfully",
