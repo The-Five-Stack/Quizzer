@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 import quizzer.fivestack.project.enums.Difficulty;
 import jakarta.persistence.Column;
 import java.util.List;
@@ -18,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 
 @Entity
+@SoftDelete(strategy = SoftDeleteType.DELETED)
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +39,11 @@ public class Question {
     private Quiz quiz;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Answer> answers;
+
+    @Column(nullable = false, insertable = false, updatable = false)
+    private boolean deleted = false;
 
     public Question() {
 
@@ -95,6 +101,14 @@ public class Question {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
 

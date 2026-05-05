@@ -7,9 +7,12 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 
 
 @Entity
+@SoftDelete(strategy = SoftDeleteType.DELETED)
 public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,12 +39,16 @@ public class Quiz {
     private User owner;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "quiz", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Question> questions;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
+
+
+    @Column(nullable = false, insertable = false, updatable = false)
+    private boolean deleted = false;
 
     public Quiz(){
 
@@ -134,6 +141,15 @@ public class Quiz {
     public void setCategory(Category category) {
         this.category = category;
     }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
 
 
 }

@@ -11,8 +11,11 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 
 @Entity
+@SoftDelete(strategy = SoftDeleteType.DELETED)
 public class Category {
 
     @Id
@@ -26,6 +29,9 @@ public class Category {
 
     @Column(length = 255)
     private String description;
+
+    @Column(nullable = false, insertable = false, updatable = false)
+    private boolean deleted = false;
 
     public Category() {
     }
@@ -60,12 +66,20 @@ public class Category {
         this.description = description;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public String toString() {
         return "Category [id=" + id + ", name=" + name + "]";
     }
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JsonIgnore
     private List<Quiz> quizzes;
 
