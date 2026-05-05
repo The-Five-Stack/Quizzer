@@ -39,7 +39,7 @@ public class Question {
     private Quiz quiz;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Answer> answers;
 
     @Column(nullable = false, insertable = false, updatable = false)

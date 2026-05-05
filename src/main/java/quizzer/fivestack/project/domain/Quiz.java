@@ -39,7 +39,7 @@ public class Quiz {
     private User owner;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "quiz", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Question> questions;
 
     @ManyToOne(fetch = FetchType.EAGER)

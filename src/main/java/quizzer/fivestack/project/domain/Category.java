@@ -79,7 +79,7 @@ public class Category {
         return "Category [id=" + id + ", name=" + name + "]";
     }
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JsonIgnore
     private List<Quiz> quizzes;
 
