@@ -2,6 +2,7 @@ package quizzer.fivestack.project.domain;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -16,13 +17,17 @@ public class Review {
     private Long id;
 
     private int rating;
+
+    @Column(nullable = false)
     private String review;
+
+    @Column(nullable = false)
     private String nickname;
 
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "quizId")
+    @JoinColumn(name = "quizId",  nullable = false)
     private Quiz quiz;
 
     public Long getId() {
