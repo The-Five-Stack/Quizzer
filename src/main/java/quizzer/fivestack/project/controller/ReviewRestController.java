@@ -37,20 +37,13 @@ public class ReviewRestController {
     @Operation(summary = "Create a review for a quiz")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Review created successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input (validation error)", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid input / Validation error", content = @Content),
             @ApiResponse(responseCode = "403", description = "Quiz is not published", content = @Content),
             @ApiResponse(responseCode = "404", description = "Quiz not found", content = @Content)
     })
     @PostMapping("/{quizId}/reviews")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewResponseDto createReview(@PathVariable Long quizId, @Valid @RequestBody ReviewDto dto,
-            BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    bindingResult.getAllErrors().get(0).getDefaultMessage());
-        }
+    public ReviewResponseDto createReview(@PathVariable Long quizId, @Valid @RequestBody ReviewDto dto) {
 
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new ResponseStatusException(
