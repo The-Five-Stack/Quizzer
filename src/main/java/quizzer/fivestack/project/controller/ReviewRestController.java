@@ -1,5 +1,7 @@
 package quizzer.fivestack.project.controller;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -89,12 +91,16 @@ public class ReviewRestController {
 
                 List<Review> reviews = reviewRepository.findByQuizQuizId(quizId);
 
-                // Calculate statistics
-                double average = reviews.stream()
-                                .mapToInt(Review::getRating)
+                //Calculate the raw average using doubles
+                double rawAverage = reviews.stream()
+                                .mapToDouble(Review::getRating)
                                 .average()
                                 .orElse(0.0);
 
+                // Round to 1 decimal place (e.g., 3.3333 -> 3.3)
+                double average = BigDecimal.valueOf(rawAverage)
+                                .setScale(1, RoundingMode.HALF_UP)
+                                .doubleValue();
                 long total = reviews.size();
 
                 // Map entities to ReviewResponseDto (to keep Swagger clean)
