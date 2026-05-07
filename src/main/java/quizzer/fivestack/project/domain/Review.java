@@ -9,8 +9,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 
 @Entity
+@SoftDelete(strategy = SoftDeleteType.DELETED)
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +32,9 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "quizId",  nullable = false)
     private Quiz quiz;
+
+    @Column(nullable = false, insertable = false, updatable = false)
+    private boolean deleted = false;
 
     public Long getId() {
         return id;
@@ -76,6 +82,14 @@ public class Review {
 
     public void setQuiz(Quiz quiz) {
         this.quiz = quiz;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
     
 }
