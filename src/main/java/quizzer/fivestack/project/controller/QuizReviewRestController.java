@@ -32,7 +32,7 @@ import quizzer.fivestack.project.repository.ReviewRepository;
 
 @RestController
 @RequestMapping("/api/quizzes")
-@Tag(name = "Quiz Reviews", description = "Operations for creating and reading quiz reviews")
+@Tag(name = "Reviews", description = "Operations for creating and reading quiz reviews")
 @CrossOrigin(origins = { "http://localhost:5173", "https://quizzer-ui.onrender.com" })
 public class QuizReviewRestController {
 
