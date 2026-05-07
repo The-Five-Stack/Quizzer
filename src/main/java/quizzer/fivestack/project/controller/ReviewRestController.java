@@ -18,6 +18,7 @@ import quizzer.fivestack.project.domain.Review;
 import quizzer.fivestack.project.repository.ReviewRepository;
 
 @RestController
+@RequestMapping("/api/reviews")
 @Tag(name = "Reviews", description = "Operations for managing reviews within quizzes")
 @CrossOrigin(origins = { "http://localhost:5173", "https://quizzer-ui.onrender.com" })
 public class ReviewRestController {
@@ -33,7 +34,7 @@ public class ReviewRestController {
                         @ApiResponse(responseCode = "204", description = "Review deleted successfully"),
                         @ApiResponse(responseCode = "404", description = "Review not found", content = @Content)
         })
-        @DeleteMapping("/api/reviews/{reviewId}")
+        @DeleteMapping("/{reviewId}")
         public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
                 Optional<Review> reviewOpt = reviewRepository.findById(reviewId);
 
