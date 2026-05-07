@@ -33,7 +33,7 @@ public class Review {
     @JoinColumn(name = "quizId",  nullable = false)
     private Quiz quiz;
 
-    @Column(nullable = false, insertable = false, updatable = false)
+    @Column(nullable = false, insertable = false, updatable = false, columnDefinition = "boolean default false")
     private boolean deleted = false;
 
     public Long getId() {
