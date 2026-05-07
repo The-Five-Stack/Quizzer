@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,7 +26,6 @@ import quizzer.fivestack.project.repository.QuizRepository;
 import quizzer.fivestack.project.repository.ReviewRepository;
 
 @RestController
-@RequestMapping("/api/quizzes")
 @Tag(name = "Reviews", description = "Operations for managing reviews within quizzes")
 @CrossOrigin(origins = { "http://localhost:5173", "https://quizzer-ui.onrender.com" })
 public class ReviewRestController {
@@ -44,7 +45,7 @@ public class ReviewRestController {
                         @ApiResponse(responseCode = "403", description = "Quiz is not published", content = @Content),
                         @ApiResponse(responseCode = "404", description = "Quiz not found", content = @Content)
         })
-        @PostMapping("/{quizId}/reviews")
+        @PostMapping("/api/quizzes/{quizId}/reviews")
         @ResponseStatus(HttpStatus.CREATED)
         public ReviewResponseDto createReview(@PathVariable Long quizId, @Valid @RequestBody ReviewDto dto) {
 
@@ -81,7 +82,7 @@ public class ReviewRestController {
                         @ApiResponse(responseCode = "200", description = "Successfully retrieved reviews"),
                         @ApiResponse(responseCode = "404", description = "Quiz not found", content = @Content)
         })
-        @GetMapping("/{quizId}/reviews")
+        @GetMapping("/api/quizzes/{quizId}/reviews")
         public QuizReviewSummaryDto getQuizReviews(@PathVariable Long quizId) {
 
                 // Check if quiz exists
@@ -115,5 +116,22 @@ public class ReviewRestController {
                                 .toList();
 
                 return new QuizReviewSummaryDto(average, total, reviewDtos);
+        }
+
+        @Operation(summary = "Delete a review by ID")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "204", description = "Review deleted successfully"),
+                        @ApiResponse(responseCode = "404", description = "Review not found", content = @Content)
+        })
+        @DeleteMapping("/api/reviews/{reviewId}")
+        public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
+                Optional<Review> reviewOpt = reviewRepository.findById(reviewId);
+
+                if (reviewOpt.isEmpty()) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                }
+
+                reviewRepository.delete(reviewOpt.get());
+                return ResponseEntity.noContent().build();
         }
 }
