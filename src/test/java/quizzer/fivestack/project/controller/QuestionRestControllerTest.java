@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +56,6 @@ public class QuestionRestControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "teacher")
     public void getQuestionsByQuizIdReturnsEmptyListWhenQuizDoesNotHaveQuestions() throws Exception {
         // Arrange: Save a NEW quiz without any questions
         Quiz emptyQuiz = new Quiz("Empty Java Quiz", "No questions yet", "JAVA001AS1AE", true);
@@ -74,7 +72,6 @@ public class QuestionRestControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "teacher")
     public void getQuestionsByQuizIdReturnsListOfQuestionsWhenQuizHasQuestionsWithDefaultQuiz() throws Exception {
         // Arrange: Use the seeded "The Scrum Framework" quiz (which has 2 questions)
         Quiz seededQuiz = ((List<Quiz>) quizRepository.findAll()).stream()
@@ -96,7 +93,6 @@ public class QuestionRestControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "teacher")
     public void getQuestionsByQuizIdReturnsErrorWhenQuizDoesNotExist() throws Exception {
         // Act & Assert: Request an ID that was never saved
         this.mockMvc.perform(get("/api/quizzes/9999")
@@ -107,7 +103,6 @@ public class QuestionRestControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "teacher")
     public void getQuestionsByQuizIdReturnsListOfQuestionsWhenQuizHasQuestions() throws Exception {
         // 1. Arrange: Create the Quiz
         Quiz newQuiz = new Quiz("Manual Test Quiz", "Testing full graph", "TES101AS1AE", true);
