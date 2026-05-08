@@ -64,8 +64,10 @@ public class CategoryRestControllerTest {
 
     @Test
     public void createCategoryReturnsConflictWhenNameExists() throws Exception {
-        // Arrange: Seed the database with an existing category to simulate a name collision
-        // Use a unique value so this test doesn't depend on seed data and won't break if
+        // Arrange: Seed the database with an existing category to simulate a name
+        // collision
+        // Use a unique value so this test doesn't depend on seed data and won't break
+        // if
         // you later add a unique constraint on category name.
         String duplicateName = "Dup-" + UUID.randomUUID();
 
