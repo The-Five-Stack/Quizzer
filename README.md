@@ -200,3 +200,8 @@ The **Quizzer** application uses **Basic Authentication** (Spring Security) and 
 | Quiz → StudentAnswer          | One-to-Many     | One quiz can have many student submissions |
 | Question → StudentAnswer      | One-to-Many     | One question can be answered by many students |
 | Answer → StudentAnswer        | One-to-Many     | One answer option can be selected by many students |
+
+
+
+## License
+React is [MIT licensed](LICENSE).
