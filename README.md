@@ -73,6 +73,22 @@ https://quizzer-ui.onrender.com
 #### Student Dashboard
 https://quizzer-ui.onrender.com/student
 
+### Test Instruction
+To ensure the application is working correctly, you can run the integration and unit tests from the command line using the Maven Wrapper.
+
+1. Open your terminal and navigate to the root directory of the project.
+2. Execute the following command:
+
+**For Mac/Linux:**
+```bash
+./mvnw test
+```
+**Windows:**
+```bash
+mvnw.cmd test
+```
+This command will compile the code, start up the Spring Boot test context, and execute all the test cases located in the src/test/java directory.
+
 ## Retrospectives
 - Sprint 1
 https://edu.flinga.fi/s/EKJFXSK
