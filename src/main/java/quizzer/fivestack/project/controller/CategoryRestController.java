@@ -52,6 +52,10 @@ public class CategoryRestController {
     // Create a new category
     @PostMapping
     public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryDto dto) {
+        if (categoryRepository.existsByName(dto.getName())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("error", "Category name already exists!"));
+        }
 
         Category newCategory = new Category();
         newCategory.setName(dto.getName());
