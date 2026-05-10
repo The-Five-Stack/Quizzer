@@ -1,6 +1,7 @@
 package quizzer.fivestack.project.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -17,8 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 import quizzer.fivestack.project.domain.Category;
+import quizzer.fivestack.project.domain.Quiz;
 import quizzer.fivestack.project.dto.CategoryDto;
 import quizzer.fivestack.project.repository.CategoryRepository;
+import quizzer.fivestack.project.repository.QuizRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,6 +33,9 @@ public class CategoryRestControllerTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private QuizRepository quizRepository;
 
     // ObjectMapper for converting Objects to JSON strings in tests
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -84,5 +90,71 @@ public class CategoryRestControllerTest {
                 .content(objectMapper.writeValueAsString(duplicateCategory)))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").value("Category name already exists!"));
+    }
+
+    @Test
+    public void getPublishedQuizzesByCategoryReturnsListOfQuizzesWhenCategoryHasPublishedQuiz() throws Exception {
+        Category category = createTestCategory();
+        createPublishedQuiz(category, "Scrum Framework");
+        createUnpublishedQuiz(category, "Draft Quiz");
+
+        mockMvc.perform(get("/api/categories/" + category.getId() + "/published-quizzes")
+                        .with(httpBasic("teacher2", "teacher123")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].name").value("Scrum Framework"))
+                .andExpect(jsonPath("$[0].published").value(true));
+    }
+
+    @Test
+    public void getPublishedQuizzesByCategoryReturnsOnlyPublishedQuizzes() throws Exception {
+        Category category = createTestCategory();
+        createPublishedQuiz(category, "Published One");
+        createUnpublishedQuiz(category, "Unpublished One");
+
+        mockMvc.perform(get("/api/categories/" + category.getId() + "/published-quizzes")
+                        .with(httpBasic("teacher2", "teacher123")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].published").value(true))
+                .andExpect(jsonPath("$[0].name").value("Published One"));
+    }
+
+    @Test
+    public void getPublishedQuizzesByCategoryReturnsEmptyListWhenCategoryHasNoPublishedQuizzes() throws Exception {
+        Category category = createTestCategory();
+        mockMvc.perform(get("/api/categories/" + category.getId() + "/published-quizzes")
+                        .with(httpBasic("teacher2", "teacher123")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    public void getPublishedQuizzesByCategoryReturnsNotFoundWhenCategoryDoesNotExist() throws Exception {
+        mockMvc.perform(get("/api/categories/999999/published-quizzes")
+                        .with(httpBasic("teacher2", "teacher123")))
+                .andExpect(status().isNotFound());
+    }
+
+    private Category createTestCategory() {
+        Category category = new Category();
+        category.setName("Test-Category-" + UUID.randomUUID());
+        category.setDescription("Test category");
+        return categoryRepository.save(category);
+    }
+
+    private void createPublishedQuiz(Category category, String name) {
+        Quiz quiz = new Quiz(name, "Description", "SOF999AS3AE", true);
+        quiz.setCategory(category);
+        quizRepository.save(quiz);
+    }
+
+    private void createUnpublishedQuiz(Category category, String name) {
+        Quiz quiz = new Quiz(name, "Description", "SOF888AS3AE", false);
+        quiz.setCategory(category);
+        quizRepository.save(quiz);
     }
 }
