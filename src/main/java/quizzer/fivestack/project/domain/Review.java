@@ -21,7 +21,7 @@ public class Review {
 
     private int rating;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String review;
 
     @Column(nullable = false)
