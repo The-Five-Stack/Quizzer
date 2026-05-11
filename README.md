@@ -103,6 +103,7 @@ erDiagram
     USER ||--o{ QUIZ : "teacher_owns"
     CATEGORY ||--o{ QUIZ : "categorizes"
     QUIZ ||--o{ QUESTION : "contains"
+    QUIZ ||--o{ REVIEW : "has_reviews"
     QUESTION ||--o{ ANSWER : "has"
     USER ||--o{ STUDENT_ANSWER : "student_submits"
     QUIZ ||--o{ STUDENT_ANSWER : "is_taken_in"
@@ -137,6 +138,7 @@ erDiagram
         LocalDateTime createdAt
         Long category_id FK
         Long owner_id FK
+        boolean deleted "soft delete"
     }
 
     QUESTION {
@@ -162,6 +164,16 @@ erDiagram
         Boolean isCorrect
         LocalDateTime submittedAt
     }
+
+    REVIEW {
+        Long id PK
+        int rating "1-5"
+        String review
+        String nickname
+        LocalDateTime createdAt
+        Long quizId FK
+        boolean deleted "soft delete"
+    }
 ```
 
 
@@ -181,7 +193,9 @@ The **Quizzer** application uses **Basic Authentication** (Spring Security) and 
 #### 3. **Quiz**
 - The central entity of the application.
 - Contains metadata such as name, description, course code, published status, and creation date.
-- Each quiz belongs to **one** teacher (`owner`) and **one** category
+- Each quiz belongs to **one** teacher (`owner`) and **one** category.
+- Quizzes support **soft delete**: removed rows are flagged rather than physically erased from the database.
+- A quiz can have **many** reviews from learners (see **Review**).
 
 #### 4. **Question**
 - Represents a single multiple-choice question inside a quiz
@@ -197,6 +211,12 @@ The **Quizzer** application uses **Basic Authentication** (Spring Security) and 
 - Tracks individual student responses
 - Records which student answered which question in which quiz, the selected answer, and whether it was correct
 - Enables the calculation of quiz results and statistics
+
+#### 7. **Review**
+- Optional feedback on a **published** quiz (submitted under a display **nickname**, not tied to `User` in the data model).
+- Stores a **rating** (typically 1–5), review text, and creation time.
+- Belongs to exactly **one** quiz; a quiz can have many reviews.
+- Supports **soft delete** like quizzes, so removed reviews remain flagged in the database instead of being hard-deleted.
 
 
 ### Relationship Summary
@@ -216,6 +236,8 @@ The **Quizzer** application uses **Basic Authentication** (Spring Security) and 
 | Quiz → StudentAnswer          | One-to-Many     | One quiz can have many student submissions |
 | Question → StudentAnswer      | One-to-Many     | One question can be answered by many students |
 | Answer → StudentAnswer        | One-to-Many     | One answer option can be selected by many students |
+| Quiz → Review                 | One-to-Many     | A quiz can have many reviews |
+| Review → Quiz                 | Many-to-One     | Each review belongs to one quiz |
 
 
 
