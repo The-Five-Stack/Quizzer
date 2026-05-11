@@ -220,4 +220,4 @@ The **Quizzer** application uses **Basic Authentication** (Spring Security) and 
 
 
 ## License
-React is [MIT licensed](LICENSE).
+React is [MIT licensed](LICENSE.txt).
