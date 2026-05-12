@@ -20,10 +20,230 @@ Members:
 <h2> Our github links: </h2>
 <ul>
 <li><a href="https://github.com/lunapham10">Oanh Pham </a> </li>
-<li><a href= "https://github.com/qynwphuu"> Ouy Tran </a> </li>
+<li><a href= "https://github.com/qynwphuu"> Quy Tran </a> </li>
 <li> <a href= "https://github.com/tripham-fi"> Tri Pham </a> </li>
 <li> <a href= "https://github.com/HaniNghi"> Nghi Vo </a> </li>
 <li><a href= "https://github.com/sadikshyeah"> Sadikshya Parajuli</a></li>
+</ul>
 
 <h2> Backlog</h2>
 <li><a href="https://github.com/orgs/The-Five-Stack/projects/2">Backlog for Quizzer</a></li>
+
+## Developer Guide
+### Backend
+#### System requirements
+
+To run this application, you must have the following installed on your system:
+- Java 17: The application is built using Java 17 (as specified in the pom.xml under the java.version property).
+- Git: To clone the repository.
+
+#### How to start the backend application
+Follow these steps to get the application up and running:
+1. Clone the repository
+Open your terminal (e.g., Git Bash, Command Prompt, or PowerShell) and run:
+
+```
+git clone https://github.com/The-Five-Stack/Quizzer.git
+cd Quizzer
+```
+
+2. Configure the Environment (Important)
+By default, the application is configured to run with an H2 in-memory database for local development. If you are running the application for the first time, ensure no other service is using port 8080.
+
+3. Run the application
+Use the Maven Wrapper (./mvnw) to start the Spring Boot application. This ensures you don't need to have Maven installed globally.
+
+```
+./mvnw spring-boot:run
+```
+
+4. Access the application
+Once the terminal shows "Started ProjectApplication", open your web browser and visit: http://localhost:8080
+
+#### URL of the backend application
+https://teacher:teacher123@quizzer-git-quizzer-project.2.rahtiapp.fi/
+
+#### REST API
+https://quizzer-git-quizzer-project.2.rahtiapp.fi/swagger-ui/index.html#/
+
+### Frontend
+
+#### Teacher Dashboard
+https://quizzer-ui.onrender.com
+
+#### Student Dashboard
+https://quizzer-ui.onrender.com/student
+
+#### Frontend Github Repository
+https://github.com/The-Five-Stack/quizzer-ui
+
+### Test Instruction
+To ensure the application is working correctly, you can run the integration and unit tests from the command line using the Maven Wrapper.
+
+1. Open your terminal and navigate to the root directory of the project.
+2. Execute the following command:
+
+**For Mac/Linux:**
+```bash
+./mvnw test
+```
+**Windows:**
+```bash
+mvnw.cmd test
+```
+This command will compile the code, start up the Spring Boot test context, and execute all the test cases located in the src/test/java directory.
+
+## Retrospectives
+- Sprint 1
+https://edu.flinga.fi/s/EKJFXSK
+- Sprint 2
+https://edu.flinga.fi/s/EVGX2MH
+
+
+## Data Model
+### Entity Relationship Diagram
+```mermaid
+erDiagram
+    USER ||--o{ QUIZ : "teacher_owns"
+    CATEGORY ||--o{ QUIZ : "categorizes"
+    QUIZ ||--o{ QUESTION : "contains"
+    QUIZ ||--o{ REVIEW : "has_reviews"
+    QUESTION ||--o{ ANSWER : "has"
+    USER ||--o{ STUDENT_ANSWER : "student_submits"
+    QUIZ ||--o{ STUDENT_ANSWER : "is_taken_in"
+    QUESTION ||--o{ STUDENT_ANSWER : "is_answered_in"
+    ANSWER ||--o{ STUDENT_ANSWER : "is_selected"
+
+    USER {
+        Long id PK
+        String username UK
+        String fullname
+        String firstName
+        String lastName
+        String email UK
+        String password
+        Boolean enabled
+        LocalDateTime createdAt
+        LocalDateTime updatedAt
+    }
+
+    CATEGORY {
+        Long id PK
+        String name
+        String description
+    }
+
+    QUIZ {
+        Long quizId PK
+        String quizName
+        String quizDescription
+        String courseCode
+        Boolean isPublished
+        LocalDateTime createdAt
+        Long category_id FK
+        Long owner_id FK
+        boolean deleted "soft delete"
+    }
+
+    QUESTION {
+        Long questionId PK
+        String questionContent
+        Difficulty difficulty "EASY | NORMAL | HARD"
+        Long quiz_id FK
+    }
+
+    ANSWER {
+        Long answerId PK
+        String answerContent
+        Boolean isCorrect
+        Long question_id FK
+    }
+
+    STUDENT_ANSWER {
+        Long id PK
+        Long user_id FK
+        Long quiz_id FK
+        Long question_id FK
+        Long selected_answer_id FK
+        Boolean isCorrect
+        LocalDateTime submittedAt
+    }
+
+    REVIEW {
+        Long id PK
+        int rating "1-5"
+        String review
+        String nickname
+        LocalDateTime createdAt
+        Long quizId FK
+        boolean deleted "soft delete"
+    }
+```
+
+
+### Data Model Description
+
+The **Quizzer** application uses **Basic Authentication** (Spring Security) and consists of the following main entities:
+
+#### 1. **User**
+- Represents both **teachers** and **students** in the system
+- Stores authentication credentials (username and password) and profile information
+- A user can own multiple quizzes (as a teacher) and submit answers to quizzes (as a student)
+
+#### 2. **Category**
+- Used to organize quizzes by topic ("Agile", "Databases", "Java", etc...)
+- One category can be assigned to many quizzes.
+
+#### 3. **Quiz**
+- The central entity of the application.
+- Contains metadata such as name, description, course code, published status, and creation date.
+- Each quiz belongs to **one** teacher (`owner`) and **one** category.
+- Quizzes support **soft delete**: removed rows are flagged rather than physically erased from the database.
+- A quiz can have **many** reviews from learners (see **Review**).
+
+#### 4. **Question**
+- Represents a single multiple-choice question inside a quiz
+- Contains the question content and a difficulty level (`EASY`, `NORMAL`, `HARD`)
+- One quiz can have many questions.
+
+#### 5. **Answer**
+- Represents one possible answer option for a question
+- Contains the answer text and a boolean flag indicating whether it is the correct answer
+- One question can have multiple answers.
+
+#### 6. **StudentAnswer**
+- Tracks individual student responses
+- Records which student answered which question in which quiz, the selected answer, and whether it was correct
+- Enables the calculation of quiz results and statistics
+
+#### 7. **Review**
+- Optional feedback on a **published** quiz (submitted under a display **nickname**, not tied to `User` in the data model).
+- Stores a **rating** (typically 1–5), review text, and creation time.
+- Belongs to exactly **one** quiz; a quiz can have many reviews.
+- Supports **soft delete** like quizzes, so removed reviews remain flagged in the database instead of being hard-deleted.
+
+
+### Relationship Summary
+
+| Relationship                    | Type          | Description |
+|-------------------------------|---------------|-----------|
+| User → Quiz                   | One-to-Many   | A teacher owns multiple quizzes |
+| Quiz → User (owner)                | Many-to-One      | Many quizzes belong to one teacher |
+| Category → Quiz               | One-to-Many   | A category contains many quizzes |
+| Quiz → Category                    | Many-to-One      | Many quizzes belong to one category |
+| Quiz → Question               | One-to-Many   | A quiz contains many questions |
+| Question → Quiz                    | Many-to-One      | Many questions belong to one quiz |
+| Question → Answer             | One-to-Many   | A question has multiple answer options |
+| Answer → Question                  | Many-to-One      | Many answers belong to one question |
+| User ↔ Answer (via StudentAnswer)   | Many-to-Many      | Students select answers to questions |
+| User → StudentAnswer                | One-to-Many       | A user can have many answer submissions |
+| Quiz → StudentAnswer          | One-to-Many     | One quiz can have many student submissions |
+| Question → StudentAnswer      | One-to-Many     | One question can be answered by many students |
+| Answer → StudentAnswer        | One-to-Many     | One answer option can be selected by many students |
+| Quiz → Review                 | One-to-Many     | A quiz can have many reviews |
+| Review → Quiz                 | Many-to-One     | Each review belongs to one quiz |
+
+
+
+## License
+React is [MIT licensed](LICENSE.txt).

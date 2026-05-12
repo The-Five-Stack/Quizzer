@@ -1,0 +1,96 @@
+package quizzer.fivestack.project.domain;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
+
+@Entity
+@SoftDelete(strategy = SoftDeleteType.DELETED)
+public class Answer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long answerId;
+
+    @Column(nullable = false, length = 500)
+    private String answerContent;
+
+    @Column(nullable = false)
+    private Boolean isCorrect;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="questionId")
+    private Question question;
+
+    @Column(nullable = false, insertable = false, updatable = false)
+    private boolean deleted = false;
+
+    public Answer() {
+
+    }
+
+    public Answer(String answerContent, Boolean isCorrect, Question question) {
+        this.answerContent = answerContent;
+        this.isCorrect = isCorrect;
+        this.question = question;
+    }
+
+    public Long getAnswerId() {
+        return answerId;
+    }
+
+    public void setAnswerId(Long answerId) {
+        this.answerId = answerId;
+    }
+
+    public String getAnswerContent() {
+        return answerContent;
+    }
+
+    public void setAnswerContent(String answerContent) {
+        this.answerContent = answerContent;
+    }
+
+    public Boolean getIsCorrect() {
+        return isCorrect;
+    }
+
+    public void setIsCorrect(Boolean isCorrect) {
+        this.isCorrect = isCorrect;
+    }
+
+    @JsonIgnore
+    public Question getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    @Override
+    public String toString() {
+        return "Answer [answerId=" + answerId + ", answerContent=" + answerContent + ", isCorrect=" + isCorrect + "]";
+    }
+
+    
+
+
+}
