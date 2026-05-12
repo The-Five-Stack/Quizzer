@@ -27,7 +27,8 @@ public class Category {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(length = 255)
+    @Size(max = 1000)
+    @Column(length = 1000)
     private String description;
 
     @Column(nullable = false, insertable = false, updatable = false)
