@@ -67,11 +67,15 @@ https://teacher:teacher123@quizzer-git-quizzer-project.2.rahtiapp.fi/
 https://quizzer-git-quizzer-project.2.rahtiapp.fi/swagger-ui/index.html#/
 
 ### Frontend
+
 #### Teacher Dashboard
 https://quizzer-ui.onrender.com
 
 #### Student Dashboard
 https://quizzer-ui.onrender.com/student
+
+#### Frontend Github Repository
+https://github.com/The-Five-Stack/quizzer-ui
 
 ### Test Instruction
 To ensure the application is working correctly, you can run the integration and unit tests from the command line using the Maven Wrapper.
