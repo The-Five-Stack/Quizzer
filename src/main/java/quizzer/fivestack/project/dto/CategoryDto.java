@@ -11,7 +11,7 @@ public class CategoryDto {
     @Size(max = 100)
     private String name;
 
-    @Size(max = 255)
+    @Size(max = 1000)
     private String description;
 
     // Constructor for creating a new category (without id)
